@@ -8,9 +8,9 @@ predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
 data = {}
 
 
-def get_landmarks(image_path):
+def get_landmarks(image):
     eyes_and_mouth_points = []
-    image = cv2.imread(image_path)
+    # image = cv2.imread(image_path)
     detections = detector(image, 1)
     for k, d in enumerate(detections): #For all detected face instances individually
         shape = predictor(image, d) #Draw Facial Landmarks with the predictor class

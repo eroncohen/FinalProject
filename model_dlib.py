@@ -1,48 +1,69 @@
 import numpy as np
-import math
-import dlib
-import cv2
+from keras.models import model_from_json
+import keras as k
+import pandas as pd
+from keras.models import Sequential, load_model  # Initialise our neural network model as a sequential network
+from keras.layers.normalization import BatchNormalization
+from keras.regularizers import l2
+from keras.layers import Dropout  # Prevents overfitting by randomly converting few outputs to zero
+from keras.layers import Dense # Regular fully connected neural network
+from keras.preprocessing import image
+from keras import optimizers
+from keras.callbacks import ReduceLROnPlateau, EarlyStopping, TensorBoard, ModelCheckpoint
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler
 
 
-detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
-data = {}
+def load_data(path):
+    df = pd.read_csv(path)
+    data = df.drop(["Emotion"], axis=1)
+    labels = df["Emotion"]
+    data_scaler = MinMaxScaler()
+    data_scaler.fit(data)
+    column_names = data.columns
+    data[column_names] = data_scaler.transform(data)
+    x_train, x_test, y_train, y_test = train_test_split(
+        data, labels, test_size=0.2, shuffle=True)
+    return x_train, x_test, y_train, y_test
 
 
-def get_landmarks(image_path):
-    image = cv2.imread(image_path)
-    detections = detector(image, 1)
-    for k,d in enumerate(detections): #For all detected face instances individually
-        shape = predictor(image, d) #Draw Facial Landmarks with the predictor class
-        xlist = []
-        ylist = []
-        for i in range(0, 68): #Store X and Y coordinates in two lists
-            xlist.append(float(shape.part(i).x))
-            ylist.append(float(shape.part(i).y))
-        xmean = np.mean(xlist) #Find both coordinates of centre of gravity
-        print(xmean)
-        ymean = np.mean(ylist)
-        print(ymean)
-        xcentral = [(x-xmean) for x in xlist] #Calculate distance centre <-> other points in both axes
-        ycentral = [(y-ymean) for y in ylist]
-        landmarks_vectorised = []
-        i = 1
-        for x, y, w, z in zip(xcentral, ycentral, xlist, ylist):
-            #landmarks_vectorised.append(w)
-            landmarks_vectorised.append(i)
-            i = i + 1
-            meannp = np.asarray((ymean, xmean))
-            coornp = np.asarray((z, w))
-            dist = np.linalg.norm(coornp-meannp)
-            landmarks_vectorised.append(dist)
-            landmarks_vectorised.append((math.atan2(y, x)*360)/(2*math.pi))
-        data['landmarks_vectorised'] = landmarks_vectorised
-        print(i)
-    if len(detections) < 1:
-        data['landmarks_vestorised'] = "error"
+x_train, x_test, y_train, y_test = load_data("landsmark.csv")
+model = Sequential()
+model.add(Dense(256, input_dim=64, kernel_initializer=k.initializers.random_normal(seed=13), activation="relu"))
+model.add(Dense(1, activation="sigmoid"))
+adam = optimizers.Adam(lr=0.001)
+model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])
+
+lr_reducer = ReduceLROnPlateau(monitor='loss', factor=0.9, patience=3)
+early_stopper = EarlyStopping(monitor='val_acc', min_delta=0, patience=10, mode='auto')
+check_pointer = ModelCheckpoint('new_weights.h5', monitor='loss', verbose=1, save_best_only=True)
+'''
+model.fit(
+    train_data,
+    train_labels,
+    epochs=100,
+    batch_size=64,
+    validation_split=0.2,
+    shuffle=True,
+    # verbose=0,
+    callbacks=[lr_reducer, check_pointer]#, early_stopper]
+)
+'''
+model.fit(x_train, y_train, epochs=200, batch_size=64)
+model.save("savedmodel")
 
 
-if __name__ == "__main__":
-    get_landmarks("C:/Users/Eron/Desktop/PrivateTest/3/PrivateTest_119017.jpg")
-    #print(len(data['landmarks_vectorised']))
-    print(data)
+print("Model file:  savedmodel")
+model = load_model("savedmodel")
+pred = model.predict(x_test)
+pred = [1 if y >= 0.5 else 0 for y in pred] #Threshold, transforming probabilities to either 0 or 1 depending if the probability is below or above 0.5
+scores = model.evaluate(x_test, y_test)
+print()
+print("Original  : {0}".format(", ".join([str(x) for x in y_test])))
+print()
+print("Predicted : {0}".format(", ".join([str(x) for x in pred])))
+print()
+print("Scores    : loss = ", scores[0], " acc = ", scores[1])
+print("---------------------------------------------------------")
+print()
+

@@ -1,4 +1,3 @@
-
 import numpy as np
 from keras.models import model_from_json
 from keras.models import Sequential  # Initialise our neural network model as a sequential network
