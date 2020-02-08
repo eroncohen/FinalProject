@@ -1,12 +1,13 @@
 import cv2
 from keras.models import load_model
 from preprocessing_dlib import get_landmarks
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler
 import numpy as np
 import pandas as pd
+from joblib import dump, load
 
 face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-
+model = load('svm_model.joblib')
 
 def crop_face(gray_image, x, y, w, h):
     r = max(w, h) / 2
@@ -19,7 +20,7 @@ def crop_face(gray_image, x, y, w, h):
 
 
 def scaling(arr):
-    min_max_scaler = MinMaxScaler(feature_range=(0, 1))
+    min_max_scaler = StandardScaler()
     data_scaled = min_max_scaler.fit_transform(arr.reshape(64, -1))
     data = data_scaled.reshape(-1, 64)
     return data
@@ -33,7 +34,8 @@ if cap.isOpened():
 else:
     ret = False
 while ret:
-    if frame_counter % 5 == 0:  # Sends every 5 frame for detection
+
+    if frame_counter % 15 == 0:  # Sends every 5 frame for detection
         ret, frame = cap.read()
         gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = face_cascade.detectMultiScale(gray_image, scaleFactor=1.3, minNeighbors=5, minSize=(1, 1))
@@ -43,15 +45,17 @@ while ret:
                 continue
             face_img = crop_face(gray_image, x, y, w, h)
             last_img = cv2.resize(face_img, (48, 48))
-            model = load_model("savedmodel")
+            cv2.imshow("image", last_img)
+            #model = load_model("savedmodel")
             arr = get_landmarks(last_img)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             if arr != 0:
                 new_arr = np.array([arr])
-                scaled_arr = scaling(new_arr)
-                classes = model.predict(scaled_arr[0:1])
+                #scaled_arr = scaling(new_arr)
+                classes = model.predict_proba(new_arr[0:1])[:, 1]
+                #classes = model.predict_proba(scaled_arr[0:1])[:, 1]
                 print(classes)
-                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-                if classes > 0.5:
+                if classes[0] > 0.75:
                     cv2.putText(frame, "Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                 else:
                     cv2.putText(frame, "Not Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)

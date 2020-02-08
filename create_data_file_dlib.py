@@ -4,11 +4,14 @@ from preprocessing_dlib import get_landmarks
 
 
 def create_csv_file():
-    csv_file = open('landsmark.csv', 'w', newline='')
+    csv_file = open('landsmarkMouthAndEyeBrows.csv', 'w', newline='')
     obj = csv.writer(csv_file)
     arr = []
     arr.append('Emotion')
-    for i in range(37, 69):
+    for i in range(18, 28):
+        arr.append(str(i) + "d")
+        arr.append(str(i) + "a")
+    for i in range(49, 61):
         arr.append(str(i) + "d")
         arr.append(str(i) + "a")
     obj.writerow(arr)
@@ -30,3 +33,7 @@ def create_csv_file():
                     arr_to_write.insert(0, emotion)
                     obj.writerow(arr_to_write)
     csv_file.close()
+
+
+if __name__ == '__main__':
+    create_csv_file()

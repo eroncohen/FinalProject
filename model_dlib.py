@@ -11,23 +11,30 @@ from keras.preprocessing import image
 from keras import optimizers
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping, TensorBoard, ModelCheckpoint
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler
+from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler
+from sklearn.svm import SVC, LinearSVC
+from joblib import dump, load
+from sklearn.linear_model import LogisticRegression
+from catboost import CatBoostClassifier
+from sklearn.metrics import plot_confusion_matrix
+import matplotlib.pyplot as plt
 
 
 def load_data(path):
     df = pd.read_csv(path)
     data = df.drop(["Emotion"], axis=1)
     labels = df["Emotion"]
-    data_scaler = MinMaxScaler()
-    data_scaler.fit(data)
-    column_names = data.columns
-    data[column_names] = data_scaler.transform(data)
+    #data_scaler = StandardScaler()
+    #column_names = data.columns
+    #data[column_names] = data_scaler.fit(data).transform(data)
+    #print(data[column_names])
     x_train, x_test, y_train, y_test = train_test_split(
         data, labels, test_size=0.2, shuffle=True)
-    return x_train, x_test, y_train, y_test
+    return x_train, y_train, x_test, y_test
 
 
-x_train, x_test, y_train, y_test = load_data("landsmark.csv")
+#x_train, y_train, x_test, y_test = load_data("landsmark.csv")
+'''
 model = Sequential()
 model.add(Dense(256, input_dim=64, kernel_initializer=k.initializers.random_normal(seed=13), activation="relu"))
 model.add(Dense(1, activation="sigmoid"))
@@ -37,7 +44,7 @@ model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])
 lr_reducer = ReduceLROnPlateau(monitor='loss', factor=0.9, patience=3)
 early_stopper = EarlyStopping(monitor='val_acc', min_delta=0, patience=10, mode='auto')
 check_pointer = ModelCheckpoint('new_weights.h5', monitor='loss', verbose=1, save_best_only=True)
-'''
+
 model.fit(
     train_data,
     train_labels,
@@ -48,11 +55,33 @@ model.fit(
     # verbose=0,
     callbacks=[lr_reducer, check_pointer]#, early_stopper]
 )
-'''
+
 model.fit(x_train, y_train, epochs=200, batch_size=64)
 model.save("savedmodel")
+'''
+clf = SVC(kernel='sigmoid', probability=True, tol=1e-3)
+accur_lin = []
+for i in range(0, 3):
+    print("Making sets %s" %i) #Make sets by random sampling 80/20%
+    training_data, training_labels, prediction_data, prediction_labels = load_data("landsmarkMouthAndEyeBrows.csv")
+    npar_train = np.array(training_data) #Turn the training set into a numpy array for the classifier
+    npar_trainlabs = np.array(training_labels)
+    print("training SVM linear %s" %i) #train SVM
+    clf.fit(npar_train, training_labels)
+    print("getting accuracies %s" %i) #Use score() function to get accuracy
+    npar_pred = np.array(prediction_data)
+    pred_lin = clf.score(npar_pred, prediction_labels)
+    print("linear: ", pred_lin)
+    accur_lin.append(pred_lin) #Store accuracy in a list
+    disp = plot_confusion_matrix(clf, prediction_data, prediction_labels, cmap=plt.cm.Blues)
+    print(disp.confusion_matrix)
+    plt.show()
+print("Mean value lin svm: %s" %np.mean(accur_lin)) #FGet mean accuracy of the 10 runs
+dump(clf, 'svm_modelLinear.joblib')
 
 
+
+'''
 print("Model file:  savedmodel")
 model = load_model("savedmodel")
 pred = model.predict(x_test)
@@ -66,4 +95,5 @@ print()
 print("Scores    : loss = ", scores[0], " acc = ", scores[1])
 print("---------------------------------------------------------")
 print()
+'''
 

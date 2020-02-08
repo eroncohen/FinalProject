@@ -10,7 +10,7 @@ data = {}
 
 def get_landmarks(image):
     eyes_and_mouth_points = []
-    # image = cv2.imread(image_path)
+    #image = cv2.imread(image_path)
     detections = detector(image, 1)
     for k, d in enumerate(detections): #For all detected face instances individually
         shape = predictor(image, d) #Draw Facial Landmarks with the predictor class
@@ -31,7 +31,7 @@ def get_landmarks(image):
             meannp = np.asarray((ymean, xmean))
             coornp = np.asarray((z, w))
             dist = np.linalg.norm(coornp-meannp)
-            if i > 36:
+            if (i > 36):
                 eyes_and_mouth_points.append(dist)
                 eyes_and_mouth_points.append((math.atan2(y, x)*360)/(2*math.pi))
             landmarks_vectorised.append(dist)
