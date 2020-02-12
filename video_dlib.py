@@ -38,7 +38,6 @@ while ret:
                 continue
             face_img = crop_face(gray_image, x, y, w, h)
             last_img = cv2.resize(face_img, (48, 48))
-            cv2.imshow("image", last_img)
             arr = get_landmarks(last_img)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             if arr is not None:
