@@ -1,13 +1,12 @@
 import cv2
-from keras.models import load_model
-from preprocessing_dlib import get_landmarks
+from preprocessing_mtcnn import get_landmarks
+#from preprocessing_dlib import get_landmarks
 from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler
 import numpy as np
-import pandas as pd
 from joblib import dump, load
 
 face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-model = load('svm_model.joblib')
+model = load('svm_modelMTCNN0.joblib')
 
 def crop_face(gray_image, x, y, w, h):
     r = max(w, h) / 2
@@ -49,7 +48,7 @@ while ret:
             #model = load_model("savedmodel")
             arr = get_landmarks(last_img)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            if arr != 0:
+            if arr is not None:
                 new_arr = np.array([arr])
                 #scaled_arr = scaling(new_arr)
                 classes = model.predict_proba(new_arr[0:1])[:, 1]

@@ -1,4 +1,3 @@
-import cv2
 import dlib
 import numpy as np
 import math
@@ -12,6 +11,8 @@ def get_landmarks(image):
     eyes_and_mouth_points = []
     #image = cv2.imread(image_path)
     detections = detector(image, 1)
+    if len(detections) < 1:
+        return
     for k, d in enumerate(detections): #For all detected face instances individually
         shape = predictor(image, d) #Draw Facial Landmarks with the predictor class
         xlist = []
@@ -23,22 +24,13 @@ def get_landmarks(image):
         ymean = np.mean(ylist)
         xcentral = [(x-xmean) for x in xlist] #Calculate distance centre <-> other points in both axes
         ycentral = [(y-ymean) for y in ylist]
-        landmarks_vectorised = []
         i = 1
         for x, y, w, z in zip(xcentral, ycentral, xlist, ylist):
-            #landmarks_vectorised.append(w)
-            landmarks_vectorised.append(i)
             meannp = np.asarray((ymean, xmean))
             coornp = np.asarray((z, w))
             dist = np.linalg.norm(coornp-meannp)
             if (i > 36):
                 eyes_and_mouth_points.append(dist)
                 eyes_and_mouth_points.append((math.atan2(y, x)*360)/(2*math.pi))
-            landmarks_vectorised.append(dist)
-            landmarks_vectorised.append((math.atan2(y, x)*360)/(2*math.pi))
             i = i + 1
-        data['landmarks_vectorised'] = landmarks_vectorised
-    if len(detections) < 1:
-        data['landmarks_vectorised'] = "error"
-        return 0  # no face found
     return eyes_and_mouth_points
