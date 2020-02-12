@@ -2,9 +2,6 @@ from mtcnn import MTCNN
 import cv2
 import numpy as np
 import math
-
-img = cv2.cvtColor(cv2.imread("C:/Users/Eron/PycharmProjects/Final_Project/Training/3/Training_188659.jpg"), cv2.COLOR_BGR2RGB)
-img2 = cv2.cvtColor(cv2.imread("C:/Users/Eron/Desktop/study/FinalProject/pics/neu.jpg"), cv2.COLOR_BGR2RGB)
 detector = MTCNN()
 
 

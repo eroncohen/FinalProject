@@ -1,12 +1,12 @@
 import cv2
 from preprocessing_mtcnn import get_landmarks
 #from preprocessing_dlib import get_landmarks
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler, StandardScaler
 import numpy as np
-from joblib import dump, load
+from joblib import load
 
 face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-model = load('svm_modelMTCNN0.joblib')
+model = load('svm_modelMTCNN2.joblib')
+
 
 def crop_face(gray_image, x, y, w, h):
     r = max(w, h) / 2
@@ -17,12 +17,6 @@ def crop_face(gray_image, x, y, w, h):
     nr = int(r * 2)
     return gray_image[ny:ny + nr, nx:nx + nr]
 
-
-def scaling(arr):
-    min_max_scaler = StandardScaler()
-    data_scaled = min_max_scaler.fit_transform(arr.reshape(64, -1))
-    data = data_scaled.reshape(-1, 64)
-    return data
 
 window_name = "Live Video Feed"
 cv2.namedWindow(window_name)
@@ -45,14 +39,11 @@ while ret:
             face_img = crop_face(gray_image, x, y, w, h)
             last_img = cv2.resize(face_img, (48, 48))
             cv2.imshow("image", last_img)
-            #model = load_model("savedmodel")
             arr = get_landmarks(last_img)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             if arr is not None:
                 new_arr = np.array([arr])
-                #scaled_arr = scaling(new_arr)
                 classes = model.predict_proba(new_arr[0:1])[:, 1]
-                #classes = model.predict_proba(scaled_arr[0:1])[:, 1]
                 print(classes)
                 if classes[0] > 0.75:
                     cv2.putText(frame, "Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
