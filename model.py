@@ -11,7 +11,7 @@ from keras.layers import Dense # Regular fully connected neural network
 from keras.preprocessing import image
 from keras import optimizers
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping, TensorBoard, ModelCheckpoint
-NUMBER_OF_IMAGES = 20668
+NUMBER_OF_IMAGES = 16551
 HAPPY = '3'
 
 
@@ -92,12 +92,12 @@ class Model:
 
 def load_model_func():
     # load json and create model
-    json_file = open('json_string_model.json', 'r')
+    json_file = open('model_mouth_updated.json', 'r')
     loaded_model_json = json_file.read()
     json_file.close()
     loaded_model = model_from_json(loaded_model_json)
     # load weights into new model
-    loaded_model.load_weights('weights.h5')
+    loaded_model.load_weights('weights_mouth.h5')
     print("Loaded model from disk")
     print(loaded_model.summary())
     return loaded_model
@@ -121,7 +121,7 @@ def load_data(dataset_path):
         for line_no, line in enumerate(file.readlines()):
             if 0 < line_no <= NUMBER_OF_IMAGES:
                 curr_class, line, set_type = line.split(',')
-                image_data = np.asarray([int(line) for line in line.split()]).reshape(48,48)  # Creating a list out of the string then converting it into a 2-Dimensional numpy array.
+                image_data = np.asarray([int(line) for line in line.split()]).reshape(15, 15)  # Creating a list out of the string then converting it into a 2-Dimensional numpy array.
                 image_data = image_data.astype(np.uint8) / 255.0
 
                 if set_type.strip() == 'PrivateTest':
@@ -132,9 +132,9 @@ def load_data(dataset_path):
                     labels.append(curr_class)
 
         test_data = np.expand_dims(test_data, -1)
-        test_labels = [1 if num == HAPPY else 0 for num in test_labels]
+        #test_labels = [1 if num == HAPPY else 0 for num in test_labels]
         data = np.expand_dims(data, -1)
-        labels = [1 if num == HAPPY else 0 for num in labels]
+        #labels = [1 if num == HAPPY else 0 for num in labels]
 
         return np.array(data), np.array(labels), np.array(test_data), np.array(test_labels)
 
