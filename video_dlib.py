@@ -44,7 +44,7 @@ while ret:
                 new_arr = np.array([arr])
                 classes = model.predict_proba(new_arr[0:1])[:, 1]
                 print(classes)
-                if classes[0] > 0.75:
+                if classes[0] > 0.50:
                     cv2.putText(frame, "Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
                 else:
                     cv2.putText(frame, "Not Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
