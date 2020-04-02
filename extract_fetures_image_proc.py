@@ -113,8 +113,11 @@ def find_nose(image, mean_pixels):
     return round(x_nose_sum/len(nose_part)), round(y_nose_sum/len(nose_part))
 
 
-def our_mtcnn(image_path):
-    img_to_detect = img.imread(image_path)
+def our_mtcnn(image_path, image):
+    if image_path is not None:
+        img_to_detect = img.imread(image_path)
+    else:
+        img_to_detect = image
     mean_pixels = mean_of_image(img_to_detect)
     left_eye, right_eye = find_eyes(img_to_detect, mean_pixels)
     left_m, right_m = find_mouth(img_to_detect, mean_pixels)
@@ -150,12 +153,12 @@ def our_mtcnn(image_path):
     return landmarks_vectorised
 
 if __name__ == "__main__":
-    imag = img.imread("C:/Users/Eron/PycharmProjects/Final_Project/PublicTest/5/PublicTest_7882629.jpg")
+    imag = img.imread("happy.jpeg")
     print(mean_of_image(imag))
-
-    left_eye, right_eye = find_eyes(imag)
-    left_m, right_m = find_mouth(imag)
-    nose = find_nose(imag)
+    mean_pixels = mean_of_image(imag)
+    left_eye, right_eye = find_eyes(imag, mean_pixels)
+    left_m, right_m = find_mouth(imag, mean_pixels)
+    nose = find_nose(imag, mean_pixels)
     print(left_eye)
     print(right_eye)
     print(left_m)
