@@ -6,7 +6,7 @@ from extract_fetures_image_proc import our_mtcnn
 
 
 def create_csv_file():
-    csv_file = open('our_mtcnn.csv', 'w', newline='')
+    csv_file = open('our_mtcnn_new.csv', 'w', newline='')
     obj = csv.writer(csv_file)
     arr = []
     arr.append('Emotion')
@@ -33,7 +33,7 @@ def create_csv_file():
             directory = os.fsencode(directory_name)
             for file in os.listdir(directory):
                 filename = os.fsdecode(file)
-                arr_to_write = our_mtcnn(str(directory_name) + '/' + str(filename))
+                arr_to_write = our_mtcnn(str(directory_name) + '/' + str(filename), image=None)
                 print(arr_to_write)
                 if arr_to_write !=  None:
                     print(str(directory_name) + '/' + str(filename))

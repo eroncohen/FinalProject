@@ -40,7 +40,7 @@ while ret:
         last_img = image_resize(gray_image, 48, 48)
         new_mouth_image = crop_mouth_from_face(last_img)
 
-        classes = model.predict_proba(new_mouth_image.reshape(1,-1))[:, 1]
+        classes = model.predict_proba(new_mouth_image.reshape(1, -1))[:, 1]
         print(classes[0])
 
     frame_counter = frame_counter + 1

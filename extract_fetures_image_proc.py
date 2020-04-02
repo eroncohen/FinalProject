@@ -17,7 +17,7 @@ def mean_of_image(image):
 def find_eyes(image, mean_pixels):
     left_part = []
     right_part = []
-    half_mean = mean_pixels / 3 * 2
+    half_mean = mean_pixels / 4 * 3
     for i in range(10, 20):
         for j in range(12, 36):
             if image[i, j] < half_mean:
@@ -46,11 +46,24 @@ def find_eyes(image, mean_pixels):
 
 
 def check_if_eye(image, x, y, mean):
+    pixels_sum = 0
     #if (image[x-1, y] < mean and image[x-2, y] < mean and image[x+1, y] < mean and image[x+2, y] < mean and
             #image[x, y-1] < mean and image[x, y+1] < mean):
-    pixels_sum = image[x-1, y] + image[x+1, y] + image[x, y-1] + image[x, y-2] + image[x, y+2] + image[x, y+1] + image[x,y]
-    #print(pixels_sum)
-    if pixels_sum/7 < mean/2:
+    #pixels_mean = (image[x - 1, y] + image[x + 1, y] + image[x, y - 1] + image[x, y - 2] + image[x, y + 2] + image[x, y + 1] + image[x, y])/7
+
+    pixels_sum += image[x, y]
+    pixels_sum += image[x - 1, y]
+    pixels_sum += image[x + 1, y]
+    pixels_sum += image[x, y - 1]
+    pixels_sum += image[x, y - 2]
+    pixels_sum += image[x, y + 1]
+    pixels_sum += image[x, y + 2]
+    pixels_mean = pixels_sum/7
+
+    #pixels_sum = (int(image[x - 1, y] + image[x + 1, y] + image[x, y - 1] + image[x, y - 2] + image[x, y + 2] + image[x, y + 1] + image[x, y]))/7
+    #pixels_arr = np.array([image[x - 1, y], image[x + 1, y], image[x, y - 1], image[x, y - 2], image[x, y + 2], image[x, y + 1], image[x, y]])
+    #pixels_mean = np.mean(pixels_arr)
+    if pixels_mean < mean:
         return True
     else:
         return False
@@ -61,14 +74,14 @@ def find_mouth(image, mean_pixels):
     right_part = []
     half_mean = mean_pixels / 4 * 3
     for i in range(32, 42):
-        for j in range(12, 36):
+        for j in range(12, 20):
             if image[i, j] < half_mean:
-                if j < 24:
-                    if check_if_mouth(image, i, j, half_mean, is_left=1):
-                        left_part.append((j, i))
-                else:
-                    if check_if_mouth(image, i, j, half_mean, is_left=0):
-                        right_part.append((j, i))
+                if check_if_mouth(image, i, j, half_mean, is_left=1):
+                    left_part.append((j, i))
+        for k in range(28, 36):
+            if image[i, k] < half_mean:
+                if check_if_mouth(image, i, k, half_mean, is_left=0):
+                    right_part.append((k, i))
     if len(left_part) == 0 or len(right_part) == 0:
         return None, None
     left_mouth = left_part[0]
@@ -98,9 +111,9 @@ def check_if_mouth(image, x, y, mean, is_left):
 def find_nose(image, mean_pixels):
     nose_part = []
     half_mean = mean_pixels / 4 * 3
-    for i in range(20, 32):
+    for i in range(20, 30):
         for j in range(20, 28):
-            if image[i, j] < half_mean:
+            if image[i, j] < mean_pixels:
                 nose_part.append((j, i))
     if len(nose_part) == 0:
         return None
@@ -153,7 +166,7 @@ def our_mtcnn(image_path, image):
     return landmarks_vectorised
 
 if __name__ == "__main__":
-    imag = img.imread("happy.jpeg")
+    imag = img.imread("C:/Users/Eron/PycharmProjects/Final_Project/Training/3/Training_11552164.jpg")
     print(mean_of_image(imag))
     mean_pixels = mean_of_image(imag)
     left_eye, right_eye = find_eyes(imag, mean_pixels)

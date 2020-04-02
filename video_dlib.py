@@ -5,7 +5,7 @@ import numpy as np
 from joblib import load
 
 face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-model = load('svm_modelMTCNN2.joblib')
+model = load('svm_model_our_mtcnn2.joblib')
 
 
 def crop_face(gray_image, x, y, w, h):

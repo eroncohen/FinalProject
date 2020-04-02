@@ -4,6 +4,7 @@ from sklearn.preprocessing import MinMaxScaler
 import cv2
 import numpy as np
 from joblib import load
+from model import load_model_func, pred
 
 face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
 model = load('svm_model_mouth2.joblib')
@@ -26,7 +27,7 @@ def crop_face(gray_image, x, y, w, h):
 window_name = "Live Video Feed"
 cv2.namedWindow(window_name)
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-
+model_cnn = load_model_func()
 frame_counter = 0  # to sample every 5 frames
 if cap.isOpened():
     ret, frame = cap.read()
@@ -47,7 +48,12 @@ while ret:
             #scaled_pic = scaling(new_mouth_image)
 
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            classes = model.predict_proba(new_mouth_image.reshape(1,-1))[:, 1]
+            #classes = model.predict_proba(new_mouth_image.reshape(1, -1))[:, 1]
+
+            image_data = np.asarray(new_mouth_image).reshape(15, 15)  # Creating a list out of the string then converting it into a 2-Dimensional numpy array.
+            image_data = image_data.astype(np.uint8) / 255.0
+
+            classes = pred(image_data, model_cnn)
             print(classes)
 
             if classes[0] > 0.50:

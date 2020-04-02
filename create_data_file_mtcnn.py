@@ -2,7 +2,6 @@ import os
 import csv
 from preprocessing_mtcnn import get_landmarks
 
-
 def create_csv_file():
     csv_file = open('landsmarkMTCNN.csv', 'w', newline='')
     obj = csv.writer(csv_file)
