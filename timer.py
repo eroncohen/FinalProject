@@ -21,7 +21,15 @@ class Timer:
 
         elapsed_time = time.perf_counter() - self._start_time
         self._start_time = None
+
         print(f"Elapsed time: {elapsed_time:0.4f} seconds")
 
     def get_time(self):
-        return time.perf_counter() - self._start_time
+        if self._start_time is None:
+            self._start_time = time.perf_counter()
+
+        elapsed_time = time.perf_counter() - self._start_time
+
+
+        return elapsed_time
+

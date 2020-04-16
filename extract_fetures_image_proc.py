@@ -166,7 +166,7 @@ def our_mtcnn(image_path, image):
     return landmarks_vectorised
 
 if __name__ == "__main__":
-    imag = img.imread("C:/Users/Eron/PycharmProjects/Final_Project/Training/3/Training_11552164.jpg")
+    imag = img.imread("suprise.jpeg")
     print(mean_of_image(imag))
     mean_pixels = mean_of_image(imag)
     left_eye, right_eye = find_eyes(imag, mean_pixels)
