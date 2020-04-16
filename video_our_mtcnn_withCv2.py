@@ -6,9 +6,12 @@ from extract_fetures_image_proc import our_mtcnn
 import cv2
 import numpy as np
 from joblib import load
+from timer import Timer
 
 face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
 model = load('svm_model_our_mtcnn_new2.joblib')
+t = Timer()
+smile_timer = Timer()
 
 def scaling(X_train):
     preproc = MinMaxScaler()
@@ -34,6 +37,11 @@ if cap.isOpened():
     ret, frame = cap.read()
 else:
     ret = False
+num_of_smiles = 0
+max_time_of_smile, time_of_smile = 0, 0
+max_class_of_smile = 0
+t.start()
+is_smile = False
 while ret:
     if frame_counter % 5 == 0:  # Sends every 5 frame for detection
         ret, frame = cap.read()
@@ -45,17 +53,36 @@ while ret:
             face_img = crop_face(gray_image, x, y, w, h)
             last_img = cv2.resize(face_img, (48, 48))
 
-            feauture_vector = our_mtcnn(image_path=None, image=last_img)
+            feature_vector = our_mtcnn(image_path=None, image=last_img)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            print(feauture_vector)
-            if feauture_vector is not None:
-                new_arr = np.array([feauture_vector])
+            if feature_vector is not None:
+                new_arr = np.array([feature_vector])
                 classes = model.predict_proba(new_arr[0:1])[:, 1]
                 print(classes)
                 if classes[0] > 0.50:
+                    if is_smile:
+                        is_smile = True
+                        smile_timer.start()
+                    if classes[0] > max_class_of_smile:
+                        max_class_of_smile = classes[0]
                     cv2.putText(frame, "Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+                    num_of_smiles += 1
                 else:
+                    if is_smile:
+                        is_smile = False
+                        time_of_smile = smile_timer.get_time()
+                        smile_timer.stop()
                     cv2.putText(frame, "Not Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
+    if not is_smile:
+        if max_time_of_smile < time_of_smile:
+            max_time_of_smile = time_of_smile
+    if t.get_time() >= 30:
+        t.stop()
+        percentage_smile = num_of_smiles/(frame_counter/5) * 100
+        print('% ' + str(percentage_smile))
+        print('longest smile ' + str(max_time_of_smile))
+        print('max class' + str(max_class_of_smile))
+
     frame_counter = frame_counter + 1
     cv2.imshow(window_name, frame)
     if cv2.waitKey(1) == 27:
