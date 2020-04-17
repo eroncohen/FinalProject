@@ -27,9 +27,6 @@ class Timer:
     def get_time(self):
         if self._start_time is None:
             self._start_time = time.perf_counter()
-
         elapsed_time = time.perf_counter() - self._start_time
-
-
-        return elapsed_time
+        return round(elapsed_time, 3)
 

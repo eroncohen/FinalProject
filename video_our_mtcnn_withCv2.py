@@ -35,16 +35,17 @@ def crop_face(gray_image, x, y, w, h):
 
 def to_csv(csv_file, smile_results, time_when_start):
     for i in range(0, len(smile_results)):
-        csv_columns = ['Percent Smile', 'High accuracy of smile, max time of smile']
+        csv_columns = ['Number of Detected Face', 'Percent Smile', 'High accuracy of smile', 'Max Time of Smile']
         writer = csv.writer(csv_file)
         end_interval_time = time_when_start + timedelta(seconds=TIME_OF_LAP)
-        writer.writerow('********Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +  str(end_interval_time.strftime("%H:%M:%S")) + '*************')
+        writer.writerow(['********Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +  str(end_interval_time.strftime("%H:%M:%S")) + '*************'])
         writer.writerow(csv_columns)
-        writer.writerow({
+        writer.writerow([
+            smile_results[i].get_num_face_detected(),
             smile_results[i].get_percentage(),
             smile_results[i].get_max_smile(),
             smile_results[i].get_max_time_of_smile()
-        })
+        ])
 
         print('********Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +  str(end_interval_time.strftime("%H:%M:%S")) + '*************')
         time_when_start = end_interval_time
@@ -110,10 +111,10 @@ while ret:
             time_of_smile = smile_timer.get_time()
             if max_time_of_smile < time_of_smile:
                 max_time_of_smile = time_of_smile
-                smile_timer.stop()
+            smile_timer.stop()
         t.stop()
         percentage_smile = num_of_smiles/(num_of_detected_face) * 100
-        smile_results.append(SmileResult(max_class_of_smile, percentage_smile, max_time_of_smile))
+        smile_results.append(SmileResult(max_class_of_smile, percentage_smile, max_time_of_smile, num_of_detected_face))
         num_of_smiles = 0
         num_of_detected_face = 0
         max_time_of_smile, time_of_smile = 0, 0
