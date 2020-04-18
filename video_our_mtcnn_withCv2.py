@@ -1,7 +1,3 @@
-from binary_image import crop_mouth_from_face
-from resize_image import image_resize
-from resize_image import image_resize_to_square
-from sklearn.preprocessing import MinMaxScaler
 from datetime import datetime, timedelta
 from extract_fetures_image_proc import our_mtcnn
 import cv2
@@ -21,6 +17,7 @@ model = load('svm_model_our_mtcnn_new2.joblib')
 interval_timer = Timer()
 smile_timer = Timer()
 video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD)
+
 
 def crop_face(gray_image, x, y, w, h):
     r = max(w, h) / 2
@@ -45,15 +42,15 @@ def to_csv(csv_file, smile_results, time_when_start):
             smile_results[i].get_max_smile(),
             smile_results[i].get_max_time_of_smile()
         ])
-
-        print('********Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +  str(end_interval_time.strftime("%H:%M:%S")) + '*************')
         time_when_start = end_interval_time
+        print('********Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +  str(end_interval_time.strftime("%H:%M:%S")) + '*************')
         smile_results[i].print_smile_details()
 
 
-def end_proccess(smile_results, time_when_start):
+def end_process(smile_results, time_when_start):
     with open('Smile Results.csv', 'w', newline='', encoding='utf8') as f:
         to_csv(f, smile_results, time_when_start)
+
 
 def initialize_ver_for_report():
     num_of_smiles = 0
@@ -77,6 +74,7 @@ def analyze_prediction(classes, is_smile, max_class_of_smile, num_of_smiles, tim
             time_of_smile = smile_timer.get_time()
             smile_timer.stop()
     return is_smile, max_class_of_smile, num_of_smiles, time_of_smile
+
 
 def start_detecting():
     smile_results = []
@@ -102,7 +100,7 @@ def start_detecting():
                     num_of_detected_face += 1
                     new_arr = np.array([feature_vector])
                     classes = model.predict_proba(new_arr[0:1])[:, 1]
-                    print(classes)
+                    print(classes[0])
                     is_smile, max_class_of_smile, num_of_smiles, time_of_smile = analyze_prediction(classes[0], is_smile, max_class_of_smile, num_of_smiles, time_of_smile)
                     video.put_text_on_frame(classes[0], frame, x, y)
         if not is_smile:
@@ -115,7 +113,7 @@ def start_detecting():
                     max_time_of_smile = time_of_smile
                 smile_timer.stop()
             interval_timer.stop()
-            percentage_smile = num_of_smiles/(num_of_detected_face) * 100 if num_of_detected_face > 0 else 0
+            percentage_smile = num_of_smiles/num_of_detected_face * 100 if num_of_detected_face > 0 else 0
             smile_results.append(SmileResult(max_class_of_smile, percentage_smile, max_time_of_smile, num_of_detected_face))
             num_of_smiles, num_of_detected_face, max_time_of_smile, time_of_smile, max_class_of_smile = initialize_ver_for_report()
         frame_counter = frame_counter + 1
@@ -123,8 +121,7 @@ def start_detecting():
         if cv2.waitKey(1) == 27:
             break
     video.stop_video()
-    end_proccess(smile_results, time_when_start)
-
+    end_process(smile_results, time_when_start)
 
 
 if __name__ == "__main__":
