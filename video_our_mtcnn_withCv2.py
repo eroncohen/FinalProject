@@ -8,9 +8,10 @@ from smile_result import SmileResult
 from video_manager import VideoManager
 import csv
 
+
 NUM_OF_SKIP_CAP = 5
 TIME_OF_INTERVAL = 5
-WINDOW_NAME ='Smile Machine'
+WINDOW_NAME = 'Smile Machine'
 SMILE_THRESHOLD = 0.5
 face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
 model = load('svm_model_our_mtcnn_new2.joblib')
