@@ -1,7 +1,7 @@
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
 from keras import optimizers
-from model import load_data
+from model_cnn import load_data
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCheckpoint
 import json
 

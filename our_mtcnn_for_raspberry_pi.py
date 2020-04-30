@@ -9,7 +9,9 @@ from imutils.video import VideoStream
 import time
 from video_manager import VideoManager
 from imutils.video import FPS
+import pyttsx3
 import csv
+import os
 
 
 NUM_OF_SKIP_CAP = 5
@@ -21,6 +23,7 @@ model = load('svm_model_our_mtcnn_new2.joblib')
 interval_timer = Timer()
 smile_timer = Timer()
 video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD)
+engine = pyttsx3.init()
 
 
 def crop_face(gray_image, x, y, w, h):
@@ -107,6 +110,12 @@ def start_detecting():
                     print(classes[0])
                     is_smile, max_class_of_smile, num_of_smiles, time_of_smile = analyze_prediction(classes[0], is_smile, max_class_of_smile, num_of_smiles, time_of_smile)
                     video.put_text_on_frame(classes[0], frame, x, y)
+                    if classes[0] > 0.5:
+                        engine.say("Ha Ha Ha")
+
+                    else:
+                        engine.say("Dont worry be happy")
+                    engine.runAndWait()
         if not is_smile:
             if max_time_of_smile < time_of_smile:
                 max_time_of_smile = time_of_smile

@@ -1,5 +1,5 @@
 import cv2
-from model import load_model_func, pred
+from model_cnn import load_model_func, pred
 
 
 class FaceCropper(object):

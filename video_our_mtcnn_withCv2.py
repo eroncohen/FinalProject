@@ -1,11 +1,11 @@
 from datetime import datetime, timedelta
-from extract_fetures_image_proc import our_mtcnn
+from Feature_Extract.extract_fetures_image_proc import our_mtcnn
 import cv2
 import numpy as np
 from joblib import load
-from timer import Timer
-from smile_result import SmileResult
-from video_manager import VideoManager
+from Utils.timer import Timer
+from Utils.smile_result import SmileResult
+from Utils.video_manager import VideoManager
 import csv
 
 
@@ -13,8 +13,8 @@ NUM_OF_SKIP_CAP = 5
 TIME_OF_INTERVAL = 5
 WINDOW_NAME = 'Smile Machine'
 SMILE_THRESHOLD = 0.5
-face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-model = load('svm_model_our_mtcnn_new2.joblib')
+face_cascade = cv2.CascadeClassifier("data/haarcascade/haarcascade_frontalface_default.xml")
+model = load('Models/svm_model_our_mtcnn_new2.joblib')
 interval_timer = Timer()
 smile_timer = Timer()
 video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD)
@@ -99,8 +99,8 @@ def start_detecting():
                 cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
                 if feature_vector is not None:
                     num_of_detected_face += 1
-                    new_arr = np.array([feature_vector])
-                    classes = model.predict_proba(new_arr[0:1])[:, 1]
+                    new_array_for_prediction = np.array([feature_vector])
+                    classes = model.predict_proba(new_array_for_prediction[0:1])[:, 1]
                     print(classes[0])
                     is_smile, max_class_of_smile, num_of_smiles, time_of_smile = analyze_prediction(classes[0], is_smile, max_class_of_smile, num_of_smiles, time_of_smile)
                     video.put_text_on_frame(classes[0], frame, x, y)

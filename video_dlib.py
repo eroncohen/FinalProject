@@ -1,11 +1,11 @@
 import cv2
-from preprocessing_mtcnn import get_landmarks
-#from preprocessing_dlib import get_landmarks
+from Feature_Extract.preprocessing_mtcnn import get_landmarks_mtcnn
+#from Feature_Extract.preprocessing_dlib import get_landmarks_dlib
 import numpy as np
 from joblib import load
 
-face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-model = load('svm_model_our_mtcnn2.joblib')
+face_cascade = cv2.CascadeClassifier("data/haarcascade/haarcascade_frontalface_default.xml")
+model = load('Models/svm_model_our_mtcnn2.joblib')
 
 
 def crop_face(gray_image, x, y, w, h):
@@ -38,7 +38,7 @@ while ret:
                 continue
             face_img = crop_face(gray_image, x, y, w, h)
             last_img = cv2.resize(face_img, (48, 48))
-            arr = get_landmarks(last_img)
+            arr = get_landmarks_mtcnn(last_img)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             if arr is not None:
                 new_arr = np.array([arr])

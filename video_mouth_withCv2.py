@@ -1,17 +1,18 @@
-from binary_image import crop_mouth_from_face
-from resize_image import image_resize
+from Feature_Extract.image_processing import crop_mouth_from_face
+from Feature_Extract.image_processing import image_resize
 from sklearn.preprocessing import MinMaxScaler
 import cv2
 import numpy as np
 from joblib import load
-from model import load_model_func, pred
+from model_cnn import load_model_func, pred
 
-face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-model = load('svm_model_mouth2.joblib')
+face_cascade = cv2.CascadeClassifier("data/haarcascade/haarcascade_frontalface_default.xml")
+model = load('Models/svm_model_mouth2.joblib')
 
-def scaling(X_train):
+
+def scaling(x_train):
     preproc = MinMaxScaler()
-    return preproc.fit_transform([X_train])
+    return preproc.fit_transform([x_train])
 
 
 def crop_face(gray_image, x, y, w, h):
@@ -27,7 +28,7 @@ def crop_face(gray_image, x, y, w, h):
 window_name = "Live Video Feed"
 cv2.namedWindow(window_name)
 cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
-model_cnn = load_model_func()
+#model_cnn = load_model_func()
 frame_counter = 0  # to sample every 5 frames
 if cap.isOpened():
     ret, frame = cap.read()
@@ -44,17 +45,18 @@ while ret:
             face_img = crop_face(gray_image, x, y, w, h)
             last_img = cv2.resize(face_img, (48, 48))
 
-            new_mouth_image = crop_mouth_from_face(last_img)
+            new_mouth_image = crop_mouth_from_face(last_img, is_cnn=False)
             #scaled_pic = scaling(new_mouth_image)
 
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
-            #classes = model.predict_proba(new_mouth_image.reshape(1, -1))[:, 1]
+            classes = model.predict_proba([new_mouth_image])[:, 1]
+            #classes = model.predict_proba(scaled_pic)[:, 1]
 
             image_data = np.asarray(new_mouth_image).reshape(15, 15)  # Creating a list out of the string then converting it into a 2-Dimensional numpy array.
             image_data = image_data.astype(np.uint8) / 255.0
 
-            classes = pred(image_data, model_cnn)
-            print(classes)
+            #classes = pred(image_data, model_cnn)
+            print(classes[0])
 
             if classes[0] > 0.50:
                 cv2.putText(frame, "Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
@@ -66,20 +68,3 @@ while ret:
         break
 cv2.destroyWindow(window_name)
 cap.release()
-
-'''
- new_image = image_resize(gray_image, 48, 48)
-        new_mouth_image = crop_mouth_from_face(new_image)
-        scaled_pic = scaling(new_mouth_image)
-
-        classes = model.predict_proba(scaled_pic)[:, 1]
-        print(classes[0])
-    frame_counter = frame_counter + 1
-    cv2.imshow(window_name, frame)
-    if cv2.waitKey(1) == 27:
-        break
-cv2.destroyWindow(window_name)
-cap.release()
-
-'''
-

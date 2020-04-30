@@ -6,7 +6,6 @@ from joblib import dump, load
 from sklearn.metrics import plot_confusion_matrix
 from sklearn.preprocessing import MinMaxScaler
 import matplotlib.pyplot as plt
-from micromlgen import port
 
 
 def scaling(x_train):
