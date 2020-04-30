@@ -1,4 +1,3 @@
-import matplotlib.image as img
 import numpy as np
 import cv2
 import math
@@ -128,7 +127,7 @@ def find_nose(image, mean_pixels):
 
 def our_mtcnn(image_path, image):
     if image_path is not None:
-        img_to_detect = img.imread(image_path)
+        img_to_detect = cv2.imread(image_path)
     else:
         img_to_detect = image
     mean_pixels = mean_of_image(img_to_detect)

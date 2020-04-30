@@ -30,7 +30,6 @@ def crop_video_and_predict_result(is_cloud, video_path):
         if frame_counter % 5 == 0:  # Sends every 5 frame for detection
             ret, frame = cap.read()
             if is_cloud:
-                # cloud detect
                 # encode image as jpeg
                 _, img_encoded = cv2.imencode('.jpg', frame)
                 # send http request with image and receive response
@@ -39,6 +38,8 @@ def crop_video_and_predict_result(is_cloud, video_path):
             else:
                 # local detect
                 detector.generate(frame)
+                # cloud detect
+
         frame_counter = frame_counter + 1
         cv2.imshow(window_name, frame)
         if cv2.waitKey(1) == 27:

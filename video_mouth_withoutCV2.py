@@ -50,19 +50,4 @@ while ret:
 cv2.destroyWindow(window_name)
 cap.release()
 
-'''
- new_image = image_resize(gray_image, 48, 48)
-        new_mouth_image = crop_mouth_from_face(new_image)
-        scaled_pic = scaling(new_mouth_image)
-
-        classes = model.predict_proba(scaled_pic)[:, 1]
-        print(classes[0])
-    frame_counter = frame_counter + 1
-    cv2.imshow(window_name, frame)
-    if cv2.waitKey(1) == 27:
-        break
-cv2.destroyWindow(window_name)
-cap.release()
-
-'''
 
