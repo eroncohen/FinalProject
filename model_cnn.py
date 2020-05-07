@@ -76,7 +76,7 @@ class Model:
     def fit_model(self, train_data, train_labels, epochs, batch_size):
         lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.9, patience=3)
         early_stopper = EarlyStopping(monitor='val_acc', min_delta=0, patience=10, mode='auto')
-        check_pointer = ModelCheckpoint('weights.h5', monitor='val_loss', verbose=1, save_best_only=True)
+        check_pointer = ModelCheckpoint('weights_cnn.h5', monitor='val_loss', verbose=1, save_best_only=True)
 
         self.model.fit(
             train_data,
@@ -90,14 +90,14 @@ class Model:
         )
 
 
-def load_model_func():
+def load_model_func(model_path, weights_path):
     # load json and create model
-    json_file = open('model_mouth_updated.json', 'r')
+    json_file = open(model_path, 'r')
     loaded_model_json = json_file.read()
     json_file.close()
     loaded_model = model_from_json(loaded_model_json)
     # load weights into new model
-    loaded_model.load_weights('weights_mouth.h5')
+    loaded_model.load_weights(weights_path)
     print("Loaded model from disk")
     print(loaded_model.summary())
     return loaded_model
@@ -132,9 +132,9 @@ def load_data(dataset_path):
                     labels.append(curr_class)
 
         test_data = np.expand_dims(test_data, -1)
-        #test_labels = [1 if num == HAPPY else 0 for num in test_labels]
+        # test_labels = [1 if num == HAPPY else 0 for num in test_labels]
         data = np.expand_dims(data, -1)
-        #labels = [1 if num == HAPPY else 0 for num in labels]
+        # labels = [1 if num == HAPPY else 0 for num in labels]
 
         return np.array(data), np.array(labels), np.array(test_data), np.array(test_labels)
 

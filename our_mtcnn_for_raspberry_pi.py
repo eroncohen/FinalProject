@@ -12,6 +12,8 @@ from imutils.video import FPS
 import pyttsx3
 import csv
 import os
+from Feature_Extract.image_processing import crop_face
+
 
 
 NUM_OF_SKIP_CAP = 5
@@ -19,21 +21,11 @@ TIME_OF_INTERVAL = 5
 WINDOW_NAME = 'Smile Machine'
 SMILE_THRESHOLD = 0.5
 face_cascade = cv2.CascadeClassifier("data/haarcascade_frontalface_default.xml")
-model = load('svm_model_our_mtcnn_new2.joblib')
+model = load('svm_model_our_mtcnn.joblib')
 interval_timer = Timer()
 smile_timer = Timer()
 video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD)
 engine = pyttsx3.init()
-
-
-def crop_face(gray_image, x, y, w, h):
-    r = max(w, h) / 2
-    center_x = x + w / 2
-    center_y = y + h / 2
-    nx = int(center_x - r)
-    ny = int(center_y - r)
-    nr = int(r * 2)
-    return gray_image[ny:ny + nr, nx:nx + nr]
 
 
 def to_csv(csv_file, smile_results, time_when_start):

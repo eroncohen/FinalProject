@@ -19,36 +19,41 @@ class ModelPredictor:
             raise TypeError('prediction_type must be an instance of PredictionType Enum')
         self.prediction_type = prediction_type
         if self.prediction_type == PredictionType.CNN:
-            None
+            self.model = load_model_func('Models/model_cnn.json', 'Models/weights/weights_cnn.h5')
         elif self.prediction_type == PredictionType.DLIB:
-            None
+            self.model = load("Models/svm_model_dlib1.joblib")
         elif self.prediction_type == PredictionType.MTCNN:
             self.model = load("Models/svm_modelMTCNN2.joblib")
         elif self.prediction_type == PredictionType.MOUTH_CNN:
-            self.model = load_model_func()
+            self.model = load_model_func('Models/model_cnn.json', 'Models/weights/weights_mouth_cnn.h5')
         elif self.prediction_type == PredictionType.MOUTH_VECTOR:
             self.model = load('Models/svm_model_mouth2.joblib')
         elif self.prediction_type == PredictionType.YE_ALGORITHM:
-            self.model = load('Models/svm_model_our_mtcnn_new2.joblib')
+            self.model = load('Models/svm_model_our_mtcnn.joblib')
 
     def get_prediction_data(self, image):
         from Feature_Extract.image_processing import crop_mouth_from_face
         from Feature_Extract.extract_fetures_image_proc import our_mtcnn
         from Feature_Extract.preprocessing_mtcnn import get_landmarks_mtcnn
-        #from Feature_Extract.preprocessing_dlib import get_landmarks_dlib
+        from Feature_Extract.preprocessing_dlib import get_landmarks_dlib
 
         if self.prediction_type == PredictionType.CNN:
-            None
-        #elif self.prediction_type == PredictionType.DLIB:
-            #facial_landmarks = get_landmarks_dlib(image)
-            #data = self.get_data_as_numpy_array(facial_landmarks)
+            data = image
+
+        elif self.prediction_type == PredictionType.DLIB:
+            facial_landmarks = get_landmarks_dlib(image)
+            data = self.get_data_as_numpy_array(facial_landmarks)
+
         elif self.prediction_type == PredictionType.MTCNN:
             facial_landmarks = get_landmarks_mtcnn(image)
             data = self.get_data_as_numpy_array(facial_landmarks)
+
         elif self.prediction_type == PredictionType.MOUTH_CNN:
             data = crop_mouth_from_face(image, is_cnn=True)
+
         elif self.prediction_type == PredictionType.MOUTH_VECTOR:
             data = crop_mouth_from_face(image, is_cnn=False)
+
         elif self.prediction_type == PredictionType.YE_ALGORITHM:
             feature_vector = our_mtcnn(image_path=None, image=image)
             data = self.get_data_as_numpy_array(feature_vector)

@@ -26,7 +26,7 @@ model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])
 
 lr_reducer = ReduceLROnPlateau(monitor='val_loss', factor=0.9, patience=3)
 early_stopper = EarlyStopping(monitor='val_acc', min_delta=0, patience=10, mode='auto')
-check_pointer = ModelCheckpoint('weights_mouth.h5', monitor='val_loss', verbose=1, save_best_only=True)
+check_pointer = ModelCheckpoint('weights_mouth_cnn.h5', monitor='val_loss', verbose=1, save_best_only=True)
 
 model.fit(
     train_data,
@@ -41,5 +41,5 @@ model.fit(
 
 json_string = model.to_json()
 print(json_string)
-with open('model_mouth_updated.json', 'w') as json_file:
+with open('model_mouth_cnn.json', 'w') as json_file:
     json_file.write(json_string)

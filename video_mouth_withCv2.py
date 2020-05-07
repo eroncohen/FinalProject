@@ -46,16 +46,17 @@ while ret:
             last_img = cv2.resize(face_img, (48, 48))
 
             new_mouth_image = crop_mouth_from_face(last_img, is_cnn=False)
-            #scaled_pic = scaling(new_mouth_image)
+            # scaled_pic = scaling(new_mouth_image)
 
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 2)
             classes = model.predict_proba([new_mouth_image])[:, 1]
-            #classes = model.predict_proba(scaled_pic)[:, 1]
+            # classes = model.predict_proba(scaled_pic)[:, 1]
 
-            image_data = np.asarray(new_mouth_image).reshape(15, 15)  # Creating a list out of the string then converting it into a 2-Dimensional numpy array.
+            # Creating a list out of the string then converting it into a 2-Dimensional numpy array.
+            image_data = np.asarray(new_mouth_image).reshape(15, 15)
             image_data = image_data.astype(np.uint8) / 255.0
 
-            #classes = pred(image_data, model_cnn)
+            # classes = pred(image_data, model_cnn)
             print(classes[0])
 
             if classes[0] > 0.50:

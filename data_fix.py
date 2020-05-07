@@ -1,17 +1,17 @@
 import os
 import csv
 from matplotlib import pyplot as plt
-from binary_image import crop_mouth_from_face
+from Feature_Extract.image_processing import crop_mouth_from_face
 
 
 def get_pixels_from_image(image_path):
-    #im = Image.open(imagePath, 'r')
-    #pix_val = list(im.getdata())
-    #pix_val_flat = [x for sets in pix_val for x in sets]
+    # im = Image.open(imagePath, 'r')
+    # pix_val = list(im.getdata())
+    # pix_val_flat = [x for sets in pix_val for x in sets]
 
     image = plt.imread(image_path)
-    #img = smp.toimage(image)  # Create a PIL image
-    #img.show()
+    # img = smp.toimage(image)  # Create a PIL image
+    # img.show()
     img_str = ' '.join(map(str, image.flatten()))
     print(len(img_str.split(" ")))
     return img_str
