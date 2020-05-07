@@ -4,12 +4,12 @@ from matplotlib import pyplot as plt
 from binary_image import crop_mouth_from_face
 
 
-def getPixelFromImage(imagePath):
+def get_pixels_from_image(image_path):
     #im = Image.open(imagePath, 'r')
     #pix_val = list(im.getdata())
     #pix_val_flat = [x for sets in pix_val for x in sets]
 
-    image = plt.imread(imagePath)
+    image = plt.imread(image_path)
     #img = smp.toimage(image)  # Create a PIL image
     #img.show()
     img_str = ' '.join(map(str, image.flatten()))

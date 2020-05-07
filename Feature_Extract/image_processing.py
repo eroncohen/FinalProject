@@ -77,3 +77,31 @@ def crop_mouth_from_face(image, is_cnn):
             mouth_vector.append(image[x_new * 2 + i, y_new + j])
     return mouth_vector if not is_cnn else new_image
 
+
+def crop_mouth_without_cv(image):
+    # reading image in variable m
+    # m = img.imread("small_image.jpg")
+    m = image
+    # determining dimension of image width(w) height(h)
+    w, h = m.shape[:2]
+
+    # required image size after cropping
+    x_new = int(w * 1 / 3)
+    y_new = int(h * 1 / 3)
+
+    x_new_eyes = int(w * 1 / 4)
+    y_new_eyes = int(h * 1 / 4)
+
+    new_image_mouth = np.zeros([x_new, y_new])
+    new_image_eyes = np.zeros([x_new_eyes, y_new_eyes*2, 3])
+
+    for i in range(1, x_new):
+        for j in range(1, y_new):
+            new_image_mouth[i, j] = m[x_new*2 + i, y_new+j]
+
+    for i in range(1, x_new_eyes):
+        for j in range(1, y_new_eyes*2):
+            new_image_eyes[i, j] = m[x_new_eyes + i, y_new_eyes + j]
+
+    return new_image_mouth
+

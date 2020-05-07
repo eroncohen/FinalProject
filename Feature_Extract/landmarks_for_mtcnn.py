@@ -4,6 +4,7 @@ import numpy as np
 
 detector = MTCNN()
 
+
 def get_landmarks(image_path):
     image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
@@ -17,18 +18,18 @@ def get_landmarks(image_path):
     points_list.append(key_points_json['nose'])
     points_list.append(key_points_json['mouth_left'])
     points_list.append(key_points_json['mouth_right'])
-    xlist = []
-    ylist = []
-    for i in range(0, 5): #Store X and Y coordinates in two lists
+    x_list = []
+    y_list = []
+    for i in range(0, 5):  # Store X and Y coordinates in two lists
 
-        xlist.append(float(points_list[i][0]))
-        ylist.append(float(points_list[i][1]))
-    xmean = int(np.mean(xlist)) #Find both coordinates of centre of gravity
-    ymean = int(np.mean(ylist))
-    image_analyze(image, xmean, ymean, points_list)
+        x_list.append(float(points_list[i][0]))
+        y_list.append(float(points_list[i][1]))
+    x_mean = int(np.mean(x_list))  # Find both coordinates of centre of gravity
+    y_mean = int(np.mean(y_list))
+    image_analyze(image, x_mean, y_mean, points_list)
 
 
-def image_analyze(image, x_mean,y_mean, points_array):
+def image_analyze(image, x_mean, y_mean, points_array):
     cv2.circle(image, (x_mean, y_mean), 5, (255, 0, 0) , -1)
     for i in range(len(points_array)):
         cv2.circle(image, (points_array[i][0], points_array[i][1]), 4, (0, 255, 0), -1)
@@ -37,7 +38,6 @@ def image_analyze(image, x_mean,y_mean, points_array):
     cv2.imshow('image', image)
     cv2.waitKey(0)
     cv2.destroyAllWindows()
-
 
 
 if __name__ == '__main__':

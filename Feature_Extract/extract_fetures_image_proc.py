@@ -10,7 +10,7 @@ def mean_of_image(image):
         for j in range(6, 42):
             pixel_sum += image[i, j]
             counter += 1
-    #pixel_sum += (image[i, j] for i in range(6, 42) for j in range(6, 42))
+    # pixel_sum += (image[i, j] for i in range(6, 42) for j in range(6, 42))
     return pixel_sum/counter
 
 

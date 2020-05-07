@@ -15,16 +15,16 @@ def get_landmarks_dlib(image):
     detections = detector(image, 1)
     if len(detections) < 1:
         return
-    for k, d in enumerate(detections): #For all detected face instances individually
-        shape = predictor(image, d) #Draw Facial Landmarks with the predictor class
+    for k, d in enumerate(detections):  # For all detected face instances individually
+        shape = predictor(image, d)  # Draw Facial Landmarks with the predictor class
         x_list = []
         y_list = []
-        for point_num in range(0, NUM_OF_DLIB_POINTS): #Store X and Y coordinates in two lists
+        for point_num in range(0, NUM_OF_DLIB_POINTS):  # Store X and Y coordinates in two lists
             x_list.append(float(shape.part(point_num).x))
             y_list.append(float(shape.part(point_num).y))
-        x_mean = np.mean(x_list) #Find both coordinates of centre of gravity
+        x_mean = np.mean(x_list)  # Find both coordinates of centre of gravity
         y_mean = np.mean(y_list)
-        x_central = [(x-x_mean) for x in x_list] #Calculate distance centre <-> other points in both axes
+        x_central = [(x-x_mean) for x in x_list]  # Calculate distance centre <-> other points in both axes
         y_central = [(y-y_mean) for y in y_list]
         point_number = 1
         for x, y, w, z in zip(x_central, y_central, x_list, y_list):
