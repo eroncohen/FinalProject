@@ -27,7 +27,7 @@ class ModelPredictor:
         elif self.prediction_type == PredictionType.MOUTH_CNN:
             self.model = load_model_func('Models/model_cnn.json', 'Models/weights/weights_mouth_cnn.h5')
         elif self.prediction_type == PredictionType.MOUTH_VECTOR:
-            self.model = load('Models/svm_model_mouth2.joblib')
+            self.model = load('Models/svm_model_mouth_vector0.joblib')
         elif self.prediction_type == PredictionType.YE_ALGORITHM:
             self.model = load('Models/svm_model_our_mtcnn.joblib')
 

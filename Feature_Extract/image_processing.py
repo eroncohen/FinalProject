@@ -70,8 +70,8 @@ def crop_mouth_from_face(image, is_cnn):
     y_new = int(h * 1 / 3)
     new_image = np.zeros([x_new, y_new])
 
-    for i in range(1, x_new):
-        for j in range(1, y_new):
+    for i in range(0, x_new):
+        for j in range(0, y_new):
             # x cropping the last third of the picture, y cropping the 2nd third
             new_image[i, j] = image[x_new * 2 + i, y_new + j]
             mouth_vector.append(image[x_new * 2 + i, y_new + j])
