@@ -1,9 +1,14 @@
 import os
 import csv
-from Feature_Extract.preprocessing_mtcnn import get_landmarks
+from Feature_Extract.preprocessing_mtcnn import get_landmarks_mtcnn
+from Feature_Extract.extract_fetures_image_proc import our_mtcnn
 
-def create_csv_file():
-    csv_file = open('landsmarkMTCNN.csv', 'w', newline='')
+
+def create_csv_file(is_ye_alg):
+    if is_ye_alg:
+        csv_file = open('our_mtcnn_new.csv', 'w', newline='')
+    else:
+        csv_file = open('landsmarkMTCNN.csv', 'w', newline='')
     obj = csv.writer(csv_file)
     arr = []
     arr.append('Emotion')
@@ -30,9 +35,12 @@ def create_csv_file():
             directory = os.fsencode(directory_name)
             for file in os.listdir(directory):
                 filename = os.fsdecode(file)
-                arr_to_write = get_landmarks(str(directory_name) + '/' + str(filename))
+                if is_ye_alg:
+                    arr_to_write = our_mtcnn(str(directory_name) + '/' + str(filename), image=None)
+                else:
+                    arr_to_write = get_landmarks_mtcnn(str(directory_name) + '/' + str(filename))
                 print(arr_to_write)
-                if arr_to_write !=  None:
+                if arr_to_write is not None:
                     print(str(directory_name) + '/' + str(filename))
                     arr_to_write.insert(0, emotion)
                     obj.writerow(arr_to_write)
@@ -40,4 +48,4 @@ def create_csv_file():
 
 
 if __name__ == '__main__':
-    create_csv_file()
+    create_csv_file(is_YE_alg=1)
