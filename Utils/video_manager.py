@@ -7,7 +7,7 @@ class VideoError(Exception):
 
 
 class VideoManager:
-    def __init__(self, window_name, smile_threshold, is_micro_controller):
+    def _init_(self, window_name, smile_threshold, is_micro_controller):
         self.window_name = window_name
         self.smile_threshold = smile_threshold
         self.is_micro_controller = is_micro_controller
@@ -36,10 +36,9 @@ class VideoManager:
             if not self.cap.isOpened():
                 raise VideoError(f"No video available to read")
                 return False, False
-
+        if self.is_micro_controller == 1:
+            return True, self.cap.read()
         return self.cap.read()
 
     def put_text_on_frame(self, classes, frame, x, y):
         cv2.putText(frame, "Not Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2) if classes < self.smile_threshold else cv2.putText(frame, "Happy", (x - 20, y - 20), cv2.FONT_HERSHEY_SIMPLEX, 0.7, (0, 255, 0), 2)
-
-

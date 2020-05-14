@@ -1,12 +1,21 @@
 import cv2
 from model_cnn import load_model_func, pred
-from Feature_Extract.image_processing import crop_face
+
+
+def crop_face(gray_image, x, y, w, h):
+    r = max(w, h) / 2
+    center_x = x + w / 2
+    center_y = y + h / 2
+    nx = int(center_x - r)
+    ny = int(center_y - r)
+    nr = int(r * 2)
+    return gray_image[ny:ny + nr, nx:nx + nr]
 
 
 class FaceCropper(object):
     CASCADE_PATH = "data/haarcascade/haarcascade_frontalface_default.xml"
 
-    def __init__(self):
+    def _init_(self):
         self.face_cascade = cv2.CascadeClassifier(self.CASCADE_PATH)
         self.loaded_model = load_model_func()
 
@@ -41,7 +50,3 @@ class FaceCropper(object):
             return classes
         else:
             return "No face found"  # TODO !!!
-
-
-
-

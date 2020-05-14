@@ -6,7 +6,11 @@ from joblib import load
 from Utils.timer import Timer
 from Utils.smile_result import SmileResult
 from Utils.video_manager import VideoManager
+from data.voices.voices_database import random_happy_sentence
+from data.voices.voices_database import random_sad_sentence
 import csv
+import pyttsx3
+
 
 
 NUM_OF_SKIP_CAP = 5
@@ -17,8 +21,9 @@ face_cascade = cv2.CascadeClassifier("data/haarcascade/haarcascade_frontalface_d
 model = load('Models/svm_model_our_mtcnn.joblib')
 interval_timer = Timer()
 smile_timer = Timer()
-video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD)
+video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD, is_micro_controller=0)
 
+engine = pyttsx3.init()
 
 def crop_face(gray_image, x, y, w, h):
     r = max(w, h) / 2
@@ -35,7 +40,7 @@ def to_csv(csv_file, smile_results, time_when_start):
         csv_columns = ['Number of Detected Face', 'Percent Smile', 'High accuracy of smile', 'Max Time of Smile']
         writer = csv.writer(csv_file)
         end_interval_time = time_when_start + timedelta(seconds=TIME_OF_INTERVAL)
-        writer.writerow(['********Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +  str(end_interval_time.strftime("%H:%M:%S")) + '*************'])
+        writer.writerow(['***Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' + str(end_interval_time.strftime("%H:%M:%S")) + '****'])
         writer.writerow(csv_columns)
         writer.writerow([
             smile_results[i].get_num_face_detected(),
@@ -44,7 +49,7 @@ def to_csv(csv_file, smile_results, time_when_start):
             smile_results[i].get_max_time_of_smile()
         ])
         time_when_start = end_interval_time
-        print('********Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +  str(end_interval_time.strftime("%H:%M:%S")) + '*************')
+        print('***Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +  str(end_interval_time.strftime("%H:%M:%S")) + '****')
         smile_results[i].print_smile_details()
 
 
@@ -77,9 +82,10 @@ def analyze_prediction(classes, is_smile, max_class_of_smile, num_of_smiles, tim
     return is_smile, max_class_of_smile, num_of_smiles, time_of_smile
 
 
-def start_detecting():
+def start_detecting(is_doll=False):
     smile_results = []
-    frame_counter = 0  # to sample every 5 frames
+    last_prediction_is_smile = False
+    frame_counter = 0  # to sample every NUM_OF_SKIP_CAP frames
     num_of_smiles, num_of_detected_face, max_time_of_smile, time_of_smile, max_class_of_smile = initialize_ver_for_report()
     ret, frame = video.read_frame()
     interval_timer.start()
@@ -104,6 +110,16 @@ def start_detecting():
                     print(classes[0])
                     is_smile, max_class_of_smile, num_of_smiles, time_of_smile = analyze_prediction(classes[0], is_smile, max_class_of_smile, num_of_smiles, time_of_smile)
                     video.put_text_on_frame(classes[0], frame, x, y)
+                    if is_doll:
+                        if classes[0] > 0.5:
+                            if last_prediction_is_smile:
+                                engine.say(random_happy_sentence())
+                            last_prediction_is_smile = True
+                        else:
+                            if last_prediction_is_smile == False:
+                                engine.say(random_sad_sentence())
+                            last_prediction_is_smile = False
+                    engine.runAndWait()
         if not is_smile:
             if max_time_of_smile < time_of_smile:
                 max_time_of_smile = time_of_smile
@@ -125,6 +141,6 @@ def start_detecting():
     end_process(smile_results, time_when_start)
 
 
-if __name__ == "__main__":
+if __name__ == "_main_":
     video.start_video()
-    start_detecting()
+    start_detecting(is_doll=True)

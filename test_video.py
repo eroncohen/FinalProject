@@ -11,8 +11,8 @@ from model_predictor import ModelPredictor, PredictionType
 from Feature_Extract.image_processing import crop_face
 
 
-NUM_OF_SKIP_CAP = 5
-TIME_OF_INTERVAL = 5
+NUM_OF_SKIP_CAP = 20
+TIME_OF_INTERVAL = 15
 WINDOW_NAME = 'Smile Machine'
 SMILE_THRESHOLD = 0.5
 face_cascade = cv2.CascadeClassifier("data/haarcascade/haarcascade_frontalface_default.xml")
@@ -20,7 +20,7 @@ model = load('Models/svm_model_our_mtcnn.joblib')
 interval_timer = Timer()
 smile_timer = Timer()
 video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD, is_micro_controller=0)
-model = ModelPredictor(PredictionType.YE_ALGORITHM)
+model = ModelPredictor(PredictionType.MOUTH_VECTOR)
 
 
 def to_csv(csv_file, smile_results, time_when_start):
@@ -28,8 +28,8 @@ def to_csv(csv_file, smile_results, time_when_start):
         csv_columns = ['Number of Detected Face', 'Percent Smile', 'High accuracy of smile', 'Max Time of Smile']
         writer = csv.writer(csv_file)
         end_interval_time = time_when_start + timedelta(seconds=TIME_OF_INTERVAL)
-        writer.writerow(['********Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +
-                         str(end_interval_time.strftime("%H:%M:%S")) + '*************'])
+        writer.writerow(['****Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +
+                         str(end_interval_time.strftime("%H:%M:%S")) + '*****'])
         writer.writerow(csv_columns)
         writer.writerow([
             smile_results[i].get_num_face_detected(),
@@ -38,8 +38,8 @@ def to_csv(csv_file, smile_results, time_when_start):
             smile_results[i].get_max_time_of_smile()
         ])
         time_when_start = end_interval_time
-        print('********Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +
-              str(end_interval_time.strftime("%H:%M:%S")) + '*************')
+        print('****Result between ' + str(time_when_start.strftime("%H:%M:%S")) + ' - ' +
+              str(end_interval_time.strftime("%H:%M:%S")) + '*****')
         smile_results[i].print_smile_details()
 
 
@@ -123,6 +123,7 @@ def start_detecting():
     end_process(smile_results, time_when_start)
 
 
-if __name__ == "__main__":
+if __name__ == "_main_":
     video.start_video()
     start_detecting()
+    

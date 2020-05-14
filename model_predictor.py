@@ -14,7 +14,7 @@ class PredictionType(Enum):
 
 
 class ModelPredictor:
-    def __init__(self, prediction_type):
+    def _init_(self, prediction_type):
         if not isinstance(prediction_type, PredictionType):
             raise TypeError('prediction_type must be an instance of PredictionType Enum')
         self.prediction_type = prediction_type
@@ -25,7 +25,7 @@ class ModelPredictor:
         elif self.prediction_type == PredictionType.MTCNN:
             self.model = load("Models/svm_modelMTCNN2.joblib")
         elif self.prediction_type == PredictionType.MOUTH_CNN:
-            self.model = load_model_func('Models/model_cnn.json', 'Models/weights/weights_mouth_cnn.h5')
+            self.model = load_model_func('Models/model_mouth_cnn.json', 'Models/weights/weights_mouth_cnn.h5')
         elif self.prediction_type == PredictionType.MOUTH_VECTOR:
             self.model = load('Models/svm_model_mouth_vector0.joblib')
         elif self.prediction_type == PredictionType.YE_ALGORITHM:
@@ -35,14 +35,14 @@ class ModelPredictor:
         from Feature_Extract.image_processing import crop_mouth_from_face
         from Feature_Extract.extract_fetures_image_proc import our_mtcnn
         from Feature_Extract.preprocessing_mtcnn import get_landmarks_mtcnn
-        from Feature_Extract.preprocessing_dlib import get_landmarks_dlib
+        #from Feature_Extract.preprocessing_dlib import get_landmarks_dlib
 
         if self.prediction_type == PredictionType.CNN:
             data = image
 
-        elif self.prediction_type == PredictionType.DLIB:
-            facial_landmarks = get_landmarks_dlib(image)
-            data = self.get_data_as_numpy_array(facial_landmarks)
+       # elif self.prediction_type == PredictionType.DLIB:
+       #     facial_landmarks = get_landmarks_dlib(image)
+        #    data = self.get_data_as_numpy_array(facial_landmarks)
 
         elif self.prediction_type == PredictionType.MTCNN:
             facial_landmarks = get_landmarks_mtcnn(image)
@@ -67,4 +67,4 @@ class ModelPredictor:
         if self.prediction_type == PredictionType.CNN or self.prediction_type == PredictionType.MOUTH_CNN:
             return pred(data, self.model)
         else:
-            return self.model.predict_proba(data[0:1])[:, 1]
+            return self.model.predict_proba([data])[:, 1] if self.prediction_type == PredictionType.MOUTH_VECTOR else self.model.predict_proba(data[0:1])[:, 1]
