@@ -110,7 +110,6 @@ def check_if_mouth(image, x, y, mean, is_left):
 
 def find_nose(image, mean_pixels):
     nose_part = []
-    half_mean = mean_pixels / 4 * 3
     for i in range(20, 30):
         for j in range(20, 28):
             if image[i, j] < mean_pixels:
@@ -126,7 +125,7 @@ def find_nose(image, mean_pixels):
     return round(x_nose_sum/len(nose_part)), round(y_nose_sum/len(nose_part))
 
 
-def our_mtcnn(image_path, image):
+def ye_algorithm_detect_five_points(image_path, image):
     if image_path is not None:
         img_to_detect = cv2.imread(image_path)
     else:
@@ -142,28 +141,10 @@ def our_mtcnn(image_path, image):
         points_list.append(nose)
         points_list.append(left_m)
         points_list.append(right_m)
+        return points_list
     else:
         return None
-    xlist = []
-    ylist = []
-    for i in range(0, 5):  # Store X and Y coordinates in two lists
-        xlist.append(float(points_list[i][0]))
-        ylist.append(float(points_list[i][1]))
-    xmean = np.mean(xlist)  # Find both coordinates of centre of gravity
-    ymean = np.mean(ylist)
 
-    xcentral = [(x - xmean) for x in xlist]  # Calculate distance centre <-> other points in both axes
-    ycentral = [(y - ymean) for y in ylist]
-    landmarks_vectorised = []
-    i = 1
-    for x, y, w, z in zip(xcentral, ycentral, xlist, ylist):
-        meannp = np.asarray((ymean, xmean))
-        coornp = np.asarray((z, w))
-        dist = np.linalg.norm(coornp - meannp)
-        landmarks_vectorised.append(dist)
-        landmarks_vectorised.append((math.atan2(y, x) * 360) / (2 * math.pi))
-        i = i + 1
-    return landmarks_vectorised
 
 if __name__ == "__main__":
     imag = cv2.imread("happy.jpg")

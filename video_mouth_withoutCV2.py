@@ -8,6 +8,7 @@ from joblib import load
 
 model = load('svm_model_mouth2.joblib')
 
+
 def scaling(X_train):
     preproc = MinMaxScaler()
     return preproc.fit_transform([X_train])

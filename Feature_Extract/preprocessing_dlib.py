@@ -11,7 +11,7 @@ NUM_OF_DLIB_POINTS = 68
 
 def get_landmarks_dlib(image):
     eyes_and_mouth_points = []
-    #image = cv2.imread(image_path)
+    # image = cv2.imread(image_path)
     detections = detector(image, 1)
     if len(detections) < 1:
         return

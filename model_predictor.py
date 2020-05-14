@@ -33,8 +33,7 @@ class ModelPredictor:
 
     def get_prediction_data(self, image):
         from Feature_Extract.image_processing import crop_mouth_from_face
-        from Feature_Extract.extract_fetures_image_proc import our_mtcnn
-        from Feature_Extract.preprocessing_mtcnn import get_landmarks_mtcnn
+        from Feature_Extract.preprocessing_mtcnn import get_five_points_distance_and_angle
         #from Feature_Extract.preprocessing_dlib import get_landmarks_dlib
 
         if self.prediction_type == PredictionType.CNN:
@@ -45,7 +44,7 @@ class ModelPredictor:
         #    data = self.get_data_as_numpy_array(facial_landmarks)
 
         elif self.prediction_type == PredictionType.MTCNN:
-            facial_landmarks = get_landmarks_mtcnn(image)
+            facial_landmarks = get_five_points_distance_and_angle(image, is_ye_algorithm=False)
             data = self.get_data_as_numpy_array(facial_landmarks)
 
         elif self.prediction_type == PredictionType.MOUTH_CNN:
@@ -55,7 +54,7 @@ class ModelPredictor:
             data = crop_mouth_from_face(image, is_cnn=False)
 
         elif self.prediction_type == PredictionType.YE_ALGORITHM:
-            feature_vector = our_mtcnn(image_path=None, image=image)
+            feature_vector = get_five_points_distance_and_angle(image, is_ye_algorithm=True)
             data = self.get_data_as_numpy_array(feature_vector)
 
         return data
