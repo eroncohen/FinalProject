@@ -1,8 +1,5 @@
 from datetime import datetime, timedelta
-from Feature_Extract.extract_fetures_image_proc import our_mtcnn
 import cv2
-import numpy as np
-from joblib import load
 from Utils.timer import Timer
 from Utils.smile_result import SmileResult
 from Utils.video_manager import VideoManager
@@ -10,6 +7,7 @@ import csv
 from model_predictor import ModelPredictor, PredictionType
 from Feature_Extract.image_processing import crop_face
 import pyttsx3
+from upload_to_aws import upload_file
 from data.voices.voices_database import random_happy_sentence, random_sad_sentence
 
 
@@ -18,11 +16,10 @@ TIME_OF_INTERVAL = 15
 WINDOW_NAME = 'Smile Machine'
 SMILE_THRESHOLD = 0.5
 face_cascade = cv2.CascadeClassifier("data/haarcascade/haarcascade_frontalface_default.xml")
-model = load('Models/svm_model_our_mtcnn.joblib')
 interval_timer = Timer()
 smile_timer = Timer()
 video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD, is_micro_controller=0)
-model = ModelPredictor(PredictionType.MOUTH_VECTOR)
+model = ModelPredictor(PredictionType.YE_ALGORITHM)
 engine = pyttsx3.init()
 
 
@@ -47,8 +44,12 @@ def to_csv(csv_file, smile_results, time_when_start):
 
 
 def end_process(smile_results, time_when_start):
-    with open('Smile Results.csv', 'w', newline='', encoding='utf8') as f:
+    with open('../../Downloads/Smile Results.csv', 'w', newline='', encoding='utf8') as f:
         to_csv(f, smile_results, time_when_start)
+    try:
+        upload_file('../../Downloads/Smile Results.csv')
+    except:
+        print("An exception occurred while uploading to aws")
 
 
 def initialize_ver_for_report():
@@ -77,6 +78,7 @@ def analyze_prediction(classes, is_smile, max_class_of_smile, num_of_smiles, tim
 
 def start_detecting(is_doll=False):
     smile_results = []
+    last_prediction_is_smile = False
     frame_counter = 0  # to sample every 5 frames
     num_of_smiles, num_of_detected_face, max_time_of_smile, time_of_smile, max_class_of_smile = \
         initialize_ver_for_report()
@@ -136,6 +138,6 @@ def start_detecting(is_doll=False):
     end_process(smile_results, time_when_start)
 
 
-if __name__ == "_main_":
+if __name__ == '__main__':
     video.start_video()
     start_detecting()

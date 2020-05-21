@@ -7,14 +7,13 @@ detector = MTCNN()
 
 
 def get_five_points_distance_and_angle(image, is_ye_algorithm):
-    #image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     if is_ye_algorithm:
         points_list = ye_algorithm_detect_five_points(None, image)
         if points_list is None:
             return
     else:
-        json = detector.detect_faces(image)
+        img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
+        json = detector.detect_faces(img)
         if len(json) == 0:
             return
         key_points_json = json[0]['keypoints']

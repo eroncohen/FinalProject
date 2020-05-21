@@ -3,7 +3,7 @@ import cv2
 import requests
 
 
-addr = 'http://3.135.225.181:5000/'
+addr = 'http://54.161.173.40:5000/'
 test_url = addr + 'predict'
 
 # prepare headers for http request

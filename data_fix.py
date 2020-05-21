@@ -37,6 +37,7 @@ if __name__ == "__main__":
 
             for file in os.listdir(directory):
                 filename = os.fsdecode(file)
-                temp_image = crop_mouth_from_face(str(directoryName) + '/' + str(filename))
-                obj.writerow([cls, temp_image, name])
+                temp_image = crop_mouth_from_face(str(directoryName) + '/' + str(filename), is_cnn=False)
+                string_image = ' '.join(map(str, temp_image))
+                obj.writerow([cls, string_image, name])
     csvfile.close()

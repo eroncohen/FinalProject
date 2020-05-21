@@ -61,7 +61,7 @@ def image_resize(image, new_x, new_y):
 def crop_mouth_from_face(image, is_cnn):
     mouth_vector = []
     # reading image in variable m
-    # m = img.imread(img_path)
+    #m = img.imread(img_path)
     # determining dimesion of image width(w) height(h)
     w, h = image.shape[:2]
 

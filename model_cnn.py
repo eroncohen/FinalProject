@@ -1,14 +1,12 @@
 import numpy as np
-from keras.models import model_from_json
 from keras.models import Sequential  # Initialise our neural network model as a sequential network
 from keras.layers import Conv2D  # Convolution operation
 from keras.layers.normalization import BatchNormalization
 from keras.regularizers import l2
 from keras.layers import Dropout  # Prevents overfitting by randomly converting few outputs to zero
 from keras.layers import MaxPooling2D  # Maxpooling function
-from keras.layers import Flatten # Converting 2D arrays into a 1D linear vector
-from keras.layers import Dense # Regular fully connected neural network
-from keras.preprocessing import image
+from keras.layers import Flatten  # Converting 2D arrays into a 1D linear vector
+from keras.layers import Dense  # Regular fully connected neural network
 from keras import optimizers
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping, TensorBoard, ModelCheckpoint
 NUMBER_OF_IMAGES = 16551
@@ -90,27 +88,6 @@ class Model:
         )
 
 
-def load_model_func(model_path, weights_path):
-    # load json and create model
-    json_file = open(model_path, 'r')
-    loaded_model_json = json_file.read()
-    json_file.close()
-    loaded_model = model_from_json(loaded_model_json)
-    # load weights into new model
-    loaded_model.load_weights(weights_path)
-    print("Loaded model from disk")
-    print(loaded_model.summary())
-    return loaded_model
-
-
-def pred(img, loaded_model):
-    image_array = image.img_to_array(img)
-    image_array = np.expand_dims(image_array, axis=0)
-    single_image = np.vstack([image_array])
-    prediction_class = loaded_model.predict(single_image)
-    return prediction_class
-
-
 def load_data(dataset_path):
     data = []
     test_data = []
@@ -121,7 +98,7 @@ def load_data(dataset_path):
         for line_no, line in enumerate(file.readlines()):
             if 0 < line_no <= NUMBER_OF_IMAGES:
                 curr_class, line, set_type = line.split(',')
-                image_data = np.asarray([int(line) for line in line.split()]).reshape(15, 15)  # Creating a list out of the string then converting it into a 2-Dimensional numpy array.
+                image_data = np.asarray([int(line) for line in line.split()]).reshape(16, 16)  # Creating a list out of the string then converting it into a 2-Dimensional numpy array.
                 image_data = image_data.astype(np.uint8) / 255.0
 
                 if set_type.strip() == 'PrivateTest':
@@ -138,7 +115,7 @@ def load_data(dataset_path):
 
         return np.array(data), np.array(labels), np.array(test_data), np.array(test_labels)
 
-
+'''
 if __name__ == "__main__":
     dataset_path = "newFer2013.csv"
     train_data, train_labels, test_data, test_labels = load_data(dataset_path)
@@ -155,3 +132,4 @@ if __name__ == "__main__":
     the_model.create_model()
     the_model.compile_model(learning_rate)
     the_model.fit_model(train_data, train_labels, epochs, batch_size)
+'''

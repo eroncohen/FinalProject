@@ -16,10 +16,9 @@ def initialize():
     global sess
     global graph
     global detector
-    print("test")
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
-    sess = tf.Session(config=config)
+    sess = tf.compat.v1.Session(config=config)
     init = tf.compat.v1.global_variables_initializer()
     sess.run(init)
     set_session(sess)

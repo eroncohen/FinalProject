@@ -3,7 +3,7 @@ import numpy as np
 import math
 
 detector = dlib.get_frontal_face_detector()
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("data/shape_predictor_68_face_landmarks.dat")
 data = {}
 EYE_START = 36
 NUM_OF_DLIB_POINTS = 68

@@ -1,7 +1,8 @@
 from enum import Enum
 from joblib import load
 import numpy as np
-from model_cnn import load_model_func, pred
+from keras.preprocessing import image
+from keras.models import model_from_json
 
 
 class PredictionType(Enum):
@@ -14,7 +15,7 @@ class PredictionType(Enum):
 
 
 class ModelPredictor:
-    def _init_(self, prediction_type):
+    def __init__(self, prediction_type):
         if not isinstance(prediction_type, PredictionType):
             raise TypeError('prediction_type must be an instance of PredictionType Enum')
         self.prediction_type = prediction_type
@@ -31,30 +32,30 @@ class ModelPredictor:
         elif self.prediction_type == PredictionType.YE_ALGORITHM:
             self.model = load('Models/svm_model_our_mtcnn.joblib')
 
-    def get_prediction_data(self, image):
+    def get_prediction_data(self, img):
         from Feature_Extract.image_processing import crop_mouth_from_face
         from Feature_Extract.preprocessing_mtcnn import get_five_points_distance_and_angle
-        #from Feature_Extract.preprocessing_dlib import get_landmarks_dlib
 
         if self.prediction_type == PredictionType.CNN:
-            data = image
+            data = img
 
-       # elif self.prediction_type == PredictionType.DLIB:
-       #     facial_landmarks = get_landmarks_dlib(image)
-        #    data = self.get_data_as_numpy_array(facial_landmarks)
+        elif self.prediction_type == PredictionType.DLIB:
+            from Feature_Extract.preprocessing_dlib import get_landmarks_dlib
+            facial_landmarks = get_landmarks_dlib(img)
+            data = self.get_data_as_numpy_array(facial_landmarks)
 
         elif self.prediction_type == PredictionType.MTCNN:
-            facial_landmarks = get_five_points_distance_and_angle(image, is_ye_algorithm=False)
+            facial_landmarks = get_five_points_distance_and_angle(img, is_ye_algorithm=False)
             data = self.get_data_as_numpy_array(facial_landmarks)
 
         elif self.prediction_type == PredictionType.MOUTH_CNN:
-            data = crop_mouth_from_face(image, is_cnn=True)
+            data = crop_mouth_from_face(img, is_cnn=True)
 
         elif self.prediction_type == PredictionType.MOUTH_VECTOR:
-            data = crop_mouth_from_face(image, is_cnn=False)
+            data = crop_mouth_from_face(img, is_cnn=False)
 
         elif self.prediction_type == PredictionType.YE_ALGORITHM:
-            feature_vector = get_five_points_distance_and_angle(image, is_ye_algorithm=True)
+            feature_vector = get_five_points_distance_and_angle(img, is_ye_algorithm=True)
             data = self.get_data_as_numpy_array(feature_vector)
 
         return data
@@ -67,3 +68,24 @@ class ModelPredictor:
             return pred(data, self.model)
         else:
             return self.model.predict_proba([data])[:, 1] if self.prediction_type == PredictionType.MOUTH_VECTOR else self.model.predict_proba(data[0:1])[:, 1]
+
+
+def load_model_func(model_path, weights_path):
+    # load json and create model
+    json_file = open(model_path, 'r')
+    loaded_model_json = json_file.read()
+    json_file.close()
+    loaded_model = model_from_json(loaded_model_json)
+    # load weights into new model
+    loaded_model.load_weights(weights_path)
+    print("Loaded model from disk")
+    print(loaded_model.summary())
+    return loaded_model
+
+
+def pred(img, loaded_model):
+    image_array = image.img_to_array(img)
+    image_array = np.expand_dims(image_array, axis=0)
+    single_image = np.vstack([image_array])
+    prediction_class = loaded_model.predict(single_image)
+    return prediction_class

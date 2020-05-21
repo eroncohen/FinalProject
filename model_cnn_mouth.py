@@ -8,7 +8,7 @@ import json
 train_data, train_labels, test_data, test_labels = load_data("mouth_only_pic.csv")
 model = Sequential()
 
-model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(15, 15, 1)))
+model.add(Conv2D(32, (3, 3), activation='relu', input_shape=(16, 16, 1)))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.5))
 model.add(Conv2D(64, (3, 3), activation='relu'))

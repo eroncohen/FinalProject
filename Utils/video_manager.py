@@ -7,7 +7,7 @@ class VideoError(Exception):
 
 
 class VideoManager:
-    def _init_(self, window_name, smile_threshold, is_micro_controller):
+    def __init__(self, window_name, smile_threshold, is_micro_controller):
         self.window_name = window_name
         self.smile_threshold = smile_threshold
         self.is_micro_controller = is_micro_controller

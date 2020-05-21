@@ -1,5 +1,5 @@
 import cv2
-from model_cnn import load_model_func, pred
+from model_predictor import load_model_func, pred
 
 
 def crop_face(gray_image, x, y, w, h):
@@ -13,11 +13,11 @@ def crop_face(gray_image, x, y, w, h):
 
 
 class FaceCropper(object):
-    CASCADE_PATH = "data/haarcascade/haarcascade_frontalface_default.xml"
+    CASCADE_PATH = "haarcascade_frontalface_default.xml"
 
-    def _init_(self):
+    def __init__(self):
         self.face_cascade = cv2.CascadeClassifier(self.CASCADE_PATH)
-        self.loaded_model = load_model_func()
+        self.loaded_model = load_model_func('model_cnn.json','weights_cnn.h5')
 
     def generate(self, frame):
         '''
@@ -33,7 +33,7 @@ class FaceCropper(object):
 
         gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         faces = self.face_cascade.detectMultiScale(gray_image, scaleFactor=1.3, minNeighbors=5, minSize=(1, 1))
-
+        classes = None
         for (x, y, w, h) in faces:
             if w < 30 and h < 30:  # skip the small faces (probably false detections)
                 continue
@@ -49,4 +49,8 @@ class FaceCropper(object):
         if classes:
             return classes
         else:
-            return "No face found"  # TODO !!!
+            return [["No face found"]]
+
+
+
+

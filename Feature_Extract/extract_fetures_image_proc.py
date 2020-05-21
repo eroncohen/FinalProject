@@ -97,12 +97,12 @@ def find_mouth(image, mean_pixels):
 
 def check_if_mouth(image, x, y, mean, is_left):
     if is_left == 1:
-        if (image[x, y+1] < mean) and (image[x, y+2] < mean) and (image[x, y-1] > mean) and (image[x, y-2] > mean):
+        if all([image[x, y+1] < mean, image[x, y+2] < mean, image[x, y-1] > mean, image[x, y-2] > mean]):
             return True
         else:
             return False
     else:
-        if (image[x, y-1] < mean) and (image[x, y-2] < mean) and (image[x, y+1] > mean) and (image[x, y+2] > mean):
+        if all([(image[x, y-1] < mean), (image[x, y-2] < mean), (image[x, y+1] > mean), (image[x, y+2] > mean)]):
             return True
         else:
             return False
@@ -148,7 +148,6 @@ def ye_algorithm_detect_five_points(image_path, image):
 
 if __name__ == "__main__":
     imag = cv2.imread("happy.jpg")
-    print(mean_of_image(imag))
     '''
     mean_pixels = mean_of_image(imag)
     left_eye, right_eye = find_eyes(imag, mean_pixels)
