@@ -141,4 +141,4 @@ def start_detecting(is_doll=False):
 
 if __name__ == '__main__':
     video.start_video()
-    start_detecting()
+    start_detecting(is_doll=True)
