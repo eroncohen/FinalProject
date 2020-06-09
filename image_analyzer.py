@@ -17,7 +17,7 @@ class FaceCropper(object):
 
     def __init__(self):
         self.face_cascade = cv2.CascadeClassifier(self.CASCADE_PATH)
-        self.loaded_model = load_model_func('model_cnn.json','weights_cnn.h5')
+        self.loaded_model = load_model_func('model_cnn.json', 'weights_cnn.h5')
 
     def generate(self, frame):
         '''

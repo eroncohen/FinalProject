@@ -114,22 +114,3 @@ def load_data(dataset_path):
         # labels = [1 if num == HAPPY else 0 for num in labels]
 
         return np.array(data), np.array(labels), np.array(test_data), np.array(test_labels)
-
-'''
-if __name__ == "__main__":
-    dataset_path = "newFer2013.csv"
-    train_data, train_labels, test_data, test_labels = load_data(dataset_path)
-
-    print("Number of images in Training set:", len(train_data))
-    print("Number of images in Test set:", len(test_data))
-
-    # ######HYPERPARAMATERS###########
-    epochs = 100
-    batch_size = 64
-    learning_rate = 0.001
-    # ################################
-    the_model = Model()
-    the_model.create_model()
-    the_model.compile_model(learning_rate)
-    the_model.fit_model(train_data, train_labels, epochs, batch_size)
-'''

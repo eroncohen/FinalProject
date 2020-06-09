@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import cv2
 from Utils.timer import Timer
 from Utils.smile_result import SmileResult
@@ -44,10 +44,11 @@ def to_csv(csv_file, smile_results, time_when_start):
 
 
 def end_process(smile_results, time_when_start):
-    with open('../../Downloads/Smile Results.csv', 'w', newline='', encoding='utf8') as f:
+    file_name = 'Smile Results'+str(date.today())+'.csv'
+    with open(file_name, 'w', newline='', encoding='utf8') as f:
         to_csv(f, smile_results, time_when_start)
     try:
-        upload_file('../../Downloads/Smile Results.csv')
+        upload_file(file_name)
     except:
         print("An exception occurred while uploading to aws")
 
