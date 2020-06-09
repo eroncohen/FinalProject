@@ -1,9 +1,7 @@
-from mtcnn import MTCNN
 import cv2
 import numpy as np
 import math
 from Feature_Extract.extract_fetures_image_proc import ye_algorithm_detect_five_points
-detector = MTCNN()
 
 
 def get_five_points_distance_and_angle(image, is_ye_algorithm):
@@ -12,6 +10,9 @@ def get_five_points_distance_and_angle(image, is_ye_algorithm):
         if points_list is None:
             return
     else:
+        from mtcnn import MTCNN
+        detector = MTCNN()
+
         img = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         json = detector.detect_faces(img)
         if len(json) == 0:
