@@ -8,6 +8,7 @@ from model_predictor import ModelPredictor, PredictionType
 from Feature_Extract.image_processing import crop_face
 import pyttsx3
 from upload_to_aws import upload_file
+from email_manager import Email
 from data.voices.voices_database import random_happy_sentence, random_sad_sentence
 
 
@@ -21,7 +22,7 @@ smile_timer = Timer()
 video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD, is_micro_controller=0)
 model = ModelPredictor(PredictionType.YE_ALGORITHM)
 engine = pyttsx3.init()
-
+email = Email('yuvalbne@gmail.com')
 
 def to_csv(csv_file, smile_results, time_when_start):
     for i in range(0, len(smile_results)):
@@ -48,6 +49,7 @@ def end_process(smile_results, time_when_start):
     with open(file_name, 'w', newline='', encoding='utf8') as f:
         to_csv(f, smile_results, time_when_start)
     try:
+        email.send_email(file_name)
         upload_file(file_name)
     except:
         print("An exception occurred while uploading to aws")
