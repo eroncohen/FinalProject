@@ -5,11 +5,15 @@ from model_predictor import PredictionType
 app = Flask(__name__)
 CORS(app)
 
+main_video = None
+counter = 0
+
 
 @app.route("/start", methods=['POST'])
 def start():
-    eron = request
-    print(request.json["times"])
+    global main_video
+    global counter
+    counter += 1
     algo = request.json["algo"]
     if algo == 'CNN':
         algo = PredictionType.CNN
@@ -19,9 +23,18 @@ def start():
         algo = PredictionType.MTCNN
     else:
         algo = PredictionType.DLIB
-    main_video = VideoMain(is_doll=request.json["doll"], email=request.json["email"], algo=algo, time=request.json["times"])
+    main_video = VideoMain(window_name=str(counter), is_doll=(request.json["doll"] == 'True'), algo=algo,
+                           time=float(request.json["times"]), email=request.json["email"])
     main_video.start_detecting()
-    return "Welcome to Python Flask!"
+    return "start"
+
+
+@app.route("/stop", methods=['POST'])
+def stop():
+    global main_video
+    #main_video = VideoMain(is_doll=request.json["doll"], email=request.json["email"], algo=algo, time=float(request.json["times"]))
+    main_video.stop_detecting()
+    return "stop"
 
 
 if __name__ == "__main__":

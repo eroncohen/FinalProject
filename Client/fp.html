@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+<script src="fp.js"></script>
+<script type="text/javascript">
+    function do_ajax() {
+      var req = new XMLHttpRequest();
+      var result = document.getElementById('result');
+      req.onreadystatechange = function()
+      {
+        if(this.readyState == 4 && this.status == 200) {
+          result.innerHTML = this.responseText;
+        } else {
+          result.innerHTML = "a";
+        }
+      }
+
+      req.open('POST', 'http://127.0.0.1:5000/',{eron:"king"}, true);
+      req.setRequestHeader('content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
+      req.send({hello:"hello",
+                hi:"hi"});
+    }
+</script>
+<style>
+    .fullPageImage{
+        background-image: url("smileFullPage.jpg");
+        height: 100%;
+        position: fixed;
+        opacity: 0.65;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-size: cover;
+    }
+</style>
+<head>
+	<title>My first website!</title>
+</head>
+<body>
+    <div class="fullPageImage">
+        <header>
+			<ul>
+                <li>
+                    <label for="times">Time of interval</label>
+                    <select name="times" id="times">
+                        <option value="15">15 Seconds</option>
+                        <option value="1200">20 Minutes</option>
+                        <option value="3600">1 Hour</option>
+                        <option value="86400">24 Hours</option>
+                    </select>
+                </li>
+                </br>
+                <li>
+                    <label for="doll">Is the use is in doll</label>
+                    <select name="doll" id="doll">
+                        <option value="True">Yes</option>
+                        <option value="False">No</option>
+                    </select>
+                </li>
+                </br>
+                <li>
+                    <label for="algo">Algorithm choice</label>
+                        <select name="algo" id="algo">
+                            <option value="YE_ALGORITHM">YE Algo</option>
+                            <option value="CNN">CNN full image</option>
+                            <option value="MTCNN">MTCNN Algo</option>
+                            <option value="DLIB">DLIB Algo</option>
+                        </select>
+                </li>
+                </br>
+                <li>
+                    <label for="email">Email for results</label>
+                    <input type="email" id="email" name="email">
+                </li>
+            </ul>
+            <div class="buttons">
+                <button id="start" style="background-color: green;" type="button" onclick="doPostStart()">Start detecting</button>
+                <button id="stop" disabled style="background-color: red;" type="button" onclick="doPostStop()">Stop detecting</button>
+            </div>
+            <div id="result"></div>
+	</header>
+	
+    </div>
+	
+</body>
+</html>

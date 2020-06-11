@@ -5,6 +5,7 @@ from keras.preprocessing import image
 from keras.models import model_from_json
 
 
+
 class PredictionType(Enum):
     CNN = 0
     DLIB = 1
@@ -24,6 +25,8 @@ class ModelPredictor:
         elif self.prediction_type == PredictionType.DLIB:
             self.model = load("Models/svm_model_dlib1.joblib")
         elif self.prediction_type == PredictionType.MTCNN:
+            from Feature_Extract.preprocessing_mtcnn import init_detector_mtcnn
+            init_detector_mtcnn()
             self.model = load("Models/svm_modelMTCNN2.joblib")
         elif self.prediction_type == PredictionType.MOUTH_CNN:
             self.model = load_model_func('Models/model_mouth_cnn.json', 'Models/weights/weights_mouth_cnn.h5')
@@ -67,7 +70,8 @@ class ModelPredictor:
         if self.prediction_type == PredictionType.CNN or self.prediction_type == PredictionType.MOUTH_CNN:
             return pred(data, self.model)
         else:
-            return self.model.predict_proba([data])[:, 1] if self.prediction_type == PredictionType.MOUTH_VECTOR else self.model.predict_proba(data[0:1])[:, 1]
+            return self.model.predict_proba([data])[:, 1] if self.prediction_type == PredictionType.MOUTH_VECTOR else \
+                self.model.predict_proba(data[0:1])[:, 1]
 
 
 def load_model_func(model_path, weights_path):
