@@ -1,7 +1,7 @@
 import os
 import csv
-from Feature_Extract.preprocessing_mtcnn import get_landmarks_mtcnn
-from Feature_Extract.extract_fetures_image_proc import our_mtcnn
+from Feature_Extract.preprocessing_mtcnn import get_five_points_distance_and_angle
+import cv2
 
 
 def create_csv_file(is_ye_alg):
@@ -35,10 +35,8 @@ def create_csv_file(is_ye_alg):
             directory = os.fsencode(directory_name)
             for file in os.listdir(directory):
                 filename = os.fsdecode(file)
-                if is_ye_alg:
-                    arr_to_write = our_mtcnn(str(directory_name) + '/' + str(filename), image=None)
-                else:
-                    arr_to_write = get_landmarks_mtcnn(str(directory_name) + '/' + str(filename))
+                image = cv2.imread(str(directory_name) + '/' + str(filename))
+                arr_to_write = get_five_points_distance_and_angle(image, is_ye_algorithm=is_ye_alg)
                 print(arr_to_write)
                 if arr_to_write is not None:
                     print(str(directory_name) + '/' + str(filename))
@@ -48,4 +46,4 @@ def create_csv_file(is_ye_alg):
 
 
 if __name__ == '__main__':
-    create_csv_file(is_YE_alg=1)
+    create_csv_file(is_ye_alg=1)

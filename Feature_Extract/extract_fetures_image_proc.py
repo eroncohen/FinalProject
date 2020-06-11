@@ -1,16 +1,16 @@
 import numpy as np
 import cv2
 import math
+MARGIN_SIZE = 6
 
 
 def mean_of_image(image):
     pixel_sum = 0
     counter = 0
-    for i in range(6, 42):
-        for j in range(6, 42):
+    for i in range(MARGIN_SIZE, len(image)-MARGIN_SIZE):
+        for j in range(MARGIN_SIZE, len(image[0])-MARGIN_SIZE):
             pixel_sum += image[i, j]
             counter += 1
-    # pixel_sum += (image[i, j] for i in range(6, 42) for j in range(6, 42))
     return pixel_sum/counter
 
 
@@ -147,9 +147,11 @@ def ye_algorithm_detect_five_points(image_path, image):
 
 
 if __name__ == "__main__":
-    imag = cv2.imread("happy.jpg")
+    # imag = cv2.imread("C:/Users/Eron/PycharmProjects/Final_Project/PrivateTest/3/PrivateTest_325008.jpg")
+    imag = cv2.imread("C:/Users/Eron/Desktop/Black_photo.jpg")
+    mean_pixel = mean_of_image(imag)
+    print(mean_pixel)
     '''
-    mean_pixels = mean_of_image(imag)
     left_eye, right_eye = find_eyes(imag, mean_pixels)
     left_m, right_m = find_mouth(imag, mean_pixels)
     nose = find_nose(imag, mean_pixels)
