@@ -1,7 +1,5 @@
-from binary_image import crop_mouth_from_face
-from resize_image import image_resize
-from resize_image import image_resize_to_square
 from sklearn.preprocessing import MinMaxScaler
+import Feature_Extract.image_processing as ip
 import cv2
 import numpy as np
 from joblib import load
@@ -9,9 +7,9 @@ from joblib import load
 model = load('svm_model_mouth2.joblib')
 
 
-def scaling(X_train):
+def scaling(x_train):
     preproc = MinMaxScaler()
-    return preproc.fit_transform([X_train])
+    return preproc.fit_transform([x_train])
 
 
 def crop_face(gray_image, x, y, w, h):
@@ -37,9 +35,9 @@ while ret:
     if frame_counter % 20 == 0:  # Sends every 5 frame for detection
         ret, frame = cap.read()
         gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        gray_image = image_resize_to_square(gray_image, 480, 480)
-        last_img = image_resize(gray_image, 48, 48)
-        new_mouth_image = crop_mouth_from_face(last_img)
+        gray_image = ip.image_resize_to_square(gray_image, 480, 480)
+        last_img = ip.image_resize(gray_image, 48, 48)
+        new_mouth_image = ip.crop_mouth_from_face(last_img)
 
         classes = model.predict_proba(new_mouth_image.reshape(1, -1))[:, 1]
         print(classes[0])
