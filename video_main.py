@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, date
 import cv2
 from Utils.timer import Timer
 from Utils.smile_result import SmileResult
@@ -8,6 +8,7 @@ from model_predictor import ModelPredictor, PredictionType
 from Feature_Extract.image_processing import crop_face
 import pyttsx3
 from upload_to_aws import upload_file
+from email_manager import Email
 from data.voices.voices_database import random_happy_sentence, random_sad_sentence
 
 
@@ -21,7 +22,7 @@ smile_timer = Timer()
 video = VideoManager(WINDOW_NAME, SMILE_THRESHOLD, is_micro_controller=0)
 model = ModelPredictor(PredictionType.YE_ALGORITHM)
 engine = pyttsx3.init()
-
+email = Email('yuvalbne@gmail.com')
 
 def to_csv(csv_file, smile_results, time_when_start):
     for i in range(0, len(smile_results)):
@@ -44,10 +45,12 @@ def to_csv(csv_file, smile_results, time_when_start):
 
 
 def end_process(smile_results, time_when_start):
-    with open('../../Downloads/Smile Results.csv', 'w', newline='', encoding='utf8') as f:
+    file_name = 'Smile Results'+str(date.today())+'.csv'
+    with open(file_name, 'w', newline='', encoding='utf8') as f:
         to_csv(f, smile_results, time_when_start)
     try:
-        upload_file('../../Downloads/Smile Results.csv')
+        email.send_email(file_name)
+        upload_file(file_name)
     except:
         print("An exception occurred while uploading to aws")
 
@@ -140,4 +143,4 @@ def start_detecting(is_doll=False):
 
 if __name__ == '__main__':
     video.start_video()
-    start_detecting()
+    start_detecting(is_doll=True)

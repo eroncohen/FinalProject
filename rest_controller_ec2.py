@@ -18,11 +18,13 @@ def initialize():
     global detector
     config = tf.compat.v1.ConfigProto()
     config.gpu_options.allow_growth = True
-    sess = tf.compat.v1.Session(config=config)
-    init = tf.compat.v1.global_variables_initializer()
-    sess.run(init)
-    set_session(sess)
     graph = tf.compat.v1.get_default_graph()
+    sess = tf.compat.v1.Session(config=config, graph=graph)
+    init = tf.compat.v1.global_variables_initializer()
+    set_session(sess)
+    sess.run(init)
+
+
     detector = FaceCropper()
 
 
