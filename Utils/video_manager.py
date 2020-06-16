@@ -26,8 +26,10 @@ class VideoManager:
 
     def stop_video(self):
         cv2.destroyWindow(self.window_name)
-        #if self.is_micro_controller == 0:
-        self.cap.release()
+        if self.is_micro_controller == 0:
+            self.cap.release()
+        else:
+            self.cap.stream.release()
 
     def show_video(self, frame):
         cv2.imshow(self.window_name, frame)
