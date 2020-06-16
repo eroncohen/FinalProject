@@ -4,7 +4,7 @@ import cv2
 import numpy as np
 from joblib import load
 
-model = load('svm_model_mouth2.joblib')
+model = load('Models/svm_model_mouth2.joblib')
 
 
 def scaling(x_train):
@@ -32,17 +32,7 @@ if cap.isOpened():
 else:
     ret = False
 while ret:
-    if frame_counter % 20 == 0:  # Sends every 5 frame for detection
-        ret, frame = cap.read()
-        gray_image = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-        gray_image = ip.image_resize_to_square(gray_image, 480, 480)
-        last_img = ip.image_resize(gray_image, 48, 48)
-        new_mouth_image = ip.crop_mouth_from_face(last_img)
-
-        classes = model.predict_proba(new_mouth_image.reshape(1, -1))[:, 1]
-        print(classes[0])
-
-    frame_counter = frame_counter + 1
+    ret, frame = cap.read()
     cv2.imshow(window_name, frame)
     if cv2.waitKey(1) == 27:
         break

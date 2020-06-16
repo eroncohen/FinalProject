@@ -31,6 +31,7 @@ class VideoManager:
 
     def show_video(self, frame):
         cv2.imshow(self.window_name, frame)
+        cv2.waitKey(1)
 
     def read_frame(self):
         if self.is_micro_controller == 0:

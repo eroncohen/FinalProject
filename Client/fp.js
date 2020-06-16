@@ -10,7 +10,7 @@ function validateEmail(emailField) {
 }
 
 function doPostStart(){
-    const url = 'http://localhost:5000/start'
+    const url = 'http://192.168.14.104:5000/start'
     var time = document.getElementById("times").value;
     var doll = document.getElementById("doll").value;
     var email = document.getElementById("email").value;
@@ -53,7 +53,7 @@ function doPostStop(){
     stopButton.disabled = true;
     startButton = document.getElementById("start");
     startButton.disabled = false;
-    const url = 'http://localhost:5000/stop'
+    const url = 'http://192.168.14.104:5000/stop'
 
     fetch(url, {
         method: "POST",

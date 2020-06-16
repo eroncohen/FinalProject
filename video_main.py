@@ -33,7 +33,7 @@ class VideoMain(object):
         self.smile_results = []
         self.time_when_start = None
         self.still_running = True
-        self.video = VideoManager(window_name, SMILE_THRESHOLD, is_micro_controller=0)
+        self.video = VideoManager(window_name, SMILE_THRESHOLD, is_micro_controller=1)
         self.interval_timer = Timer()
         self.smile_timer = Timer()
 
@@ -105,7 +105,6 @@ class VideoMain(object):
 
     def start_detecting(self):
         self.video.start_video()
-        last_prediction_is_smile = False
         frame_counter = 0  # to sample every 5 frames
         num_of_smiles, num_of_detected_face, max_time_of_smile, time_of_smile, max_class_of_smile = \
             self.initialize_ver_for_report(self)
