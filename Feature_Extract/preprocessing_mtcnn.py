@@ -2,11 +2,11 @@ import cv2
 import numpy as np
 import math
 from Feature_Extract.extract_fetures_image_proc import ye_algorithm_detect_five_points
-from mtcnn import MTCNN
 detector = None
 
 
 def init_detector_mtcnn():
+    from mtcnn import MTCNN
     global detector
     detector = MTCNN()
 
