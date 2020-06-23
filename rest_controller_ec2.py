@@ -23,8 +23,6 @@ def initialize():
     init = tf.compat.v1.global_variables_initializer()
     set_session(sess)
     sess.run(init)
-
-
     detector = FaceCropper()
 
 

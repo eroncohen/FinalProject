@@ -4,7 +4,7 @@ from Utils.timer import Timer
 from Utils.smile_result import SmileResult
 from Utils.video_manager import VideoManager
 import csv
-from model_predictor import ModelPredictor, PredictionType
+from model_manager import ModelManager, PredictionType
 from Feature_Extract.image_processing import crop_face
 import pyttsx3
 from upload_to_aws import upload_file
@@ -28,7 +28,7 @@ class VideoMain(object):
         else:
             self.email = Email(email)
         self.is_doll = is_doll
-        self.model = ModelPredictor(algo)
+        self.model = ModelManager(algo)
         self.engine = pyttsx3.init()
         self.smile_results = []
         self.time_when_start = None

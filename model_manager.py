@@ -5,7 +5,6 @@ from keras.preprocessing import image
 from keras.models import model_from_json
 
 
-
 class PredictionType(Enum):
     CNN = 0
     DLIB = 1
@@ -15,7 +14,7 @@ class PredictionType(Enum):
     YE_ALGORITHM = 5
 
 
-class ModelPredictor:
+class ModelManager:
     def __init__(self, prediction_type):
         if not isinstance(prediction_type, PredictionType):
             raise TypeError('prediction_type must be an instance of PredictionType Enum')

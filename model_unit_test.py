@@ -1,6 +1,5 @@
 import unittest
-from model_predictor import ModelPredictor, PredictionType
-from data import haarcascade
+from model_manager import ModelManager, PredictionType
 from Feature_Extract.image_processing import crop_face
 import cv2
 
@@ -11,8 +10,8 @@ naturalWomen = cv2.cvtColor(cv2.imread('data/testing images/naturalWomen.jpeg'),
 
 happyChildAllProccess = cv2.imread('data/testing images/happyChildReal.jpg')
 
-modelCNN = ModelPredictor(PredictionType.CNN)
-modelYE = ModelPredictor(PredictionType.YE_ALGORITHM)
+modelCNN = ModelManager(PredictionType.CNN)
+modelYE = ModelManager(PredictionType.YE_ALGORITHM)
 
 
 class ModelTest(unittest.TestCase):
@@ -66,7 +65,6 @@ class ModelTest(unittest.TestCase):
 
     def testNaturalMannModelYE(self):
         self.assertLess(modelYE.predict(modelYE.get_prediction_data(naturalMan)), 0.5)
-
 
 
 if __name__ == '__main__':
