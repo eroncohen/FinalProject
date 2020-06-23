@@ -1,14 +1,14 @@
 import unittest
-from model_manager import ModelManager, PredictionType
+from Utils.model_manager import ModelManager, PredictionType
 from Feature_Extract.image_processing import crop_face
 import cv2
 
-happyMan = cv2.cvtColor(cv2.imread('data/testing images/happyMan.jpeg'), cv2.COLOR_RGB2GRAY)
-naturalMan = cv2.cvtColor(cv2.imread('data/testing images/naturalMan.jpeg'), cv2.COLOR_RGB2GRAY)
-happyWomen = cv2.cvtColor(cv2.imread('data/testing images/happyWomen.jpeg'), cv2.COLOR_RGB2GRAY)
-naturalWomen = cv2.cvtColor(cv2.imread('data/testing images/naturalWomen.jpeg'), cv2.COLOR_RGB2GRAY)
+happyMan = cv2.cvtColor(cv2.imread('../data/testing images/happyMan.jpeg'), cv2.COLOR_RGB2GRAY)
+naturalMan = cv2.cvtColor(cv2.imread('../data/testing images/naturalMan.jpeg'), cv2.COLOR_RGB2GRAY)
+happyWomen = cv2.cvtColor(cv2.imread('../data/testing images/happyWomen.jpeg'), cv2.COLOR_RGB2GRAY)
+naturalWomen = cv2.cvtColor(cv2.imread('../data/testing images/naturalWomen.jpeg'), cv2.COLOR_RGB2GRAY)
 
-happyChildAllProccess = cv2.imread('data/testing images/happyChildReal.jpg')
+happyChildAllProccess = cv2.imread('../data/testing images/happyChildReal.jpg')
 
 modelCNN = ModelManager(PredictionType.CNN)
 modelYE = ModelManager(PredictionType.YE_ALGORITHM)

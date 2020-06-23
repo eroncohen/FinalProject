@@ -4,11 +4,11 @@ from Utils.timer import Timer
 from Utils.smile_result import SmileResult
 from Utils.video_manager import VideoManager
 import csv
-from model_manager import ModelManager, PredictionType
+from Utils.model_manager import ModelManager
 from Feature_Extract.image_processing import crop_face
 import pyttsx3
-from upload_to_aws import upload_file
-from email_manager import Email
+from Utils.upload_to_aws import upload_file
+from Utils.email_manager import Email
 from data.voices.voices_database import random_happy_sentence, random_sad_sentence
 from keras import backend as K
 

@@ -25,7 +25,7 @@ class VideoManager:
             return self.cap
 
     def stop_video(self):
-        cv2.destroyWindow(self.window_name)
+        # cv2.destroyWindow(self.window_name)
         if self.is_micro_controller == 0:
             self.cap.release()
         else:

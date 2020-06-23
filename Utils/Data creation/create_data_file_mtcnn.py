@@ -1,6 +1,6 @@
 import os
 import csv
-from Feature_Extract.preprocessing_mtcnn import get_five_points_distance_and_angle
+from Feature_Extract.preprocessing_5points import get_five_points_distance_and_angle
 import cv2
 
 

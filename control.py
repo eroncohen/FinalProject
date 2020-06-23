@@ -1,7 +1,7 @@
 from flask import Flask, request
 from flask_cors import CORS
 from video_main import VideoMain
-from model_manager import PredictionType
+from Utils.model_manager import PredictionType
 app = Flask(__name__)
 CORS(app)
 

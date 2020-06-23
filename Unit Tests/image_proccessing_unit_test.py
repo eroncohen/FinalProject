@@ -2,7 +2,7 @@ import unittest
 from Feature_Extract import image_processing
 import cv2
 
-happyChildAllProccess = cv2.cvtColor(cv2.imread('data/testing images/happyChildReal.jpg'), cv2.COLOR_RGB2GRAY)
+happyChildAllProccess = cv2.cvtColor(cv2.imread('../data/testing images/happyChildReal.jpg'), cv2.COLOR_RGB2GRAY)
 
 class ModelTest(unittest.TestCase):
 

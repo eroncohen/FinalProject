@@ -1,4 +1,4 @@
-from image_analyzer import FaceCropper
+from Cloud.image_analyzer import FaceCropper
 import cv2
 import requests
 

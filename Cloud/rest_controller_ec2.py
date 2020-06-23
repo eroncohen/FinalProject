@@ -4,7 +4,7 @@ import numpy as np
 from flask import Flask, request
 import cv2
 import tensorflow as tf
-from image_analyzer import FaceCropper
+from Cloud.image_analyzer import FaceCropper
 from tensorflow.python.keras.backend import set_session
 sess = None
 graph = None

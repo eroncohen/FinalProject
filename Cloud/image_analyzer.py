@@ -1,5 +1,5 @@
 import cv2
-from model_manager import load_model_func, pred
+from Utils.model_manager import load_model_func, pred
 
 
 def crop_face(gray_image, x, y, w, h):

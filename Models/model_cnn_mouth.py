@@ -1,9 +1,8 @@
 from keras.models import Sequential
 from keras.layers import Dense, Flatten, Conv2D, MaxPooling2D, Dropout
 from keras import optimizers
-from model_cnn import load_data
+from Models.model_cnn import load_data
 from keras.callbacks import ReduceLROnPlateau, EarlyStopping, ModelCheckpoint
-import json
 
 train_data, train_labels, test_data, test_labels = load_data("mouth_only_pic.csv")
 model = Sequential()
@@ -41,5 +40,5 @@ model.fit(
 
 json_string = model.to_json()
 print(json_string)
-with open('model_mouth_cnn.json', 'w') as json_file:
+with open('Classifiers/model_mouth_cnn.json', 'w') as json_file:
     json_file.write(json_string)

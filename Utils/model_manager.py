@@ -20,23 +20,23 @@ class ModelManager:
             raise TypeError('prediction_type must be an instance of PredictionType Enum')
         self.prediction_type = prediction_type
         if self.prediction_type == PredictionType.CNN:
-            self.model = load_model_func('Models/model_cnn.json', 'Models/weights/weights_cnn.h5')
+            self.model = load_model_func('../Models/Classifiers/model_cnn.json', 'Models/weights/weights_cnn.h5')
         elif self.prediction_type == PredictionType.DLIB:
-            self.model = load("Models/svm_model_dlib1.joblib")
+            self.model = load("../Models/Classifiers/svm_model_dlib1.joblib")
         elif self.prediction_type == PredictionType.MTCNN:
-            from Feature_Extract.preprocessing_mtcnn import init_detector_mtcnn
+            from Feature_Extract.preprocessing_5points import init_detector_mtcnn
             init_detector_mtcnn()
-            self.model = load("Models/svm_modelMTCNN2.joblib")
+            self.model = load("../Models/Classifiers/svm_modelMTCNN2.joblib")
         elif self.prediction_type == PredictionType.MOUTH_CNN:
-            self.model = load_model_func('Models/model_mouth_cnn.json', 'Models/weights/weights_mouth_cnn.h5')
+            self.model = load_model_func('../Models/Classifiers/model_mouth_cnn.json', 'Models/weights/weights_mouth_cnn.h5')
         elif self.prediction_type == PredictionType.MOUTH_VECTOR:
-            self.model = load('Models/svm_model_mouth_vector0.joblib')
+            self.model = load('../Models/Classifiers/svm_model_mouth_vector0.joblib')
         elif self.prediction_type == PredictionType.YE_ALGORITHM:
-            self.model = load('Models/svm_model_our_mtcnn.joblib')
+            self.model = load('../Models/Classifiers/svm_model_our_mtcnn.joblib')
 
     def get_prediction_data(self, img):
         from Feature_Extract.image_processing import crop_mouth_from_face
-        from Feature_Extract.preprocessing_mtcnn import get_five_points_distance_and_angle
+        from Feature_Extract.preprocessing_5points import get_five_points_distance_and_angle
 
         if self.prediction_type == PredictionType.CNN:
             data = img

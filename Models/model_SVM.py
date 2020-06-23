@@ -33,7 +33,7 @@ best_acc = 0
 
 for i in range(0, 3):
     print("Making sets %s" % i)  # Make sets by random sampling 80/20%
-    training_data, training_labels, prediction_data, prediction_labels = load_data("data/csv/our_mtcnn_new.csv")
+    training_data, training_labels, prediction_data, prediction_labels = load_data("../data/csv/our_mtcnn_new.csv")
     # training_data = scaling(training_data)
     # prediction_data = scaling(prediction_data)
     npar_train = np.array(training_data)  # Turn the training set into a numpy array for the classifier
